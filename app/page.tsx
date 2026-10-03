@@ -1,3 +1,4 @@
+import Shatter2D from "@/components/Shatter2D";
 import { EFFECTS } from "@/data/effects";
 import CustomCursor from "@/components/CustomCursor";
 import Scene from "@/components/Scene";
@@ -30,6 +31,7 @@ export default function Home() {
       <CustomCursor />
       {EFFECTS.scanlines && <div className="crt" />}
       <Scene />
+      {EFFECTS.shatter2d && <Shatter2D />}
       {EFFECTS.matrixRain && <MatrixRain />}
       <Navbar />
       <ScrollBar />
