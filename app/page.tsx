@@ -56,7 +56,7 @@ export default function Home() {
         </a>
       </section>
 
-      <div className="relative z-10 bg-black/70 backdrop-blur-sm">
+      <div className="relative z-10">
         <section id="about" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
           <Reveal>
             <Heading>about</Heading>
