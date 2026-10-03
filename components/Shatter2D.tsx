@@ -173,6 +173,16 @@ export default function Shatter2D() {
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
+
+      // dim the hexagon while About is on screen so the portrait is the focus
+      const aboutEl = document.getElementById("about");
+      let aw = 0;
+      if (aboutEl) {
+        const ar = aboutEl.getBoundingClientRect();
+        const ad = Math.abs(ar.top + ar.height / 2 - h / 2) / (ar.height / 2 + h * 0.25);
+        aw = smooth(1 - ad, 0.1, 0.5);
+      }
+      ctx.globalAlpha = 1 - 0.85 * aw;
       ctx.globalCompositeOperation = "lighter";
 
       // soft glow behind the object
