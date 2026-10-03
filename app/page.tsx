@@ -1,3 +1,4 @@
+import { EFFECTS } from "@/data/effects";
 import CustomCursor from "@/components/CustomCursor";
 import Scene from "@/components/Scene";
 import MatrixRain from "@/components/MatrixRain";
@@ -27,9 +28,9 @@ export default function Home() {
     <main className="relative font-mono text-green-400">
       <BootScreen />
       <CustomCursor />
-      <div className="crt" />
+      {EFFECTS.scanlines && <div className="crt" />}
       <Scene />
-      <MatrixRain />
+      {EFFECTS.matrixRain && <MatrixRain />}
       <Navbar />
       <ScrollBar />
 

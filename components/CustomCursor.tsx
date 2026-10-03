@@ -1,4 +1,5 @@
 "use client";
+import { EFFECTS } from "@/data/effects";
 
 import { useEffect, useRef } from "react";
 
@@ -57,7 +58,7 @@ export default function CustomCursor() {
       hovering = !!target?.closest("a, button, [role='button']");
 
       const now = performance.now();
-      if (!reduceMotion && now - lastSpawn > 40) {
+      if (!reduceMotion && EFFECTS.cursorTrail && now - lastSpawn > 40) {
         lastSpawn = now;
         particles.push({
           x: mx + 8,

@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import * as THREE from "three";
 import Shatter from "./Shatter";
 import Campus from "./Campus";
+import { EFFECTS } from "@/data/effects";
 
 type Shared = RefObject<{ s: number; idx: number; vel: number }>;
 
@@ -128,10 +129,10 @@ function Core({ sc }: { sc: Shared }) {
       <Float speed={1.5} rotationIntensity={0.3} floatIntensity={1}>
         <mesh ref={mesh}>
           <icosahedronGeometry args={[1.6, 1]} />
-          <meshBasicMaterial ref={mat} color="#00ff9c" wireframe transparent opacity={0.4} />
+          <meshBasicMaterial ref={mat} color="#00ff9c" wireframe transparent opacity={0.6} />
         </mesh>
       </Float>
-      <Orbiter sc={sc} />
+      {EFFECTS.orbiter && <Orbiter sc={sc} />}
     </group>
   );
 }
@@ -168,10 +169,10 @@ export default function Scene() {
     <div className="fixed inset-0 z-0 bg-black">
       <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 1.5]}>
         <Rig sc={sc} />
-        <Stars radius={80} depth={50} count={3000} factor={4} fade speed={1} />
-        <Shatter sc={sc} />
-        <Particles sc={sc} />
-        <Core sc={sc} />
+        {EFFECTS.stars && <Stars radius={80} depth={50} count={800} factor={3} fade speed={0.4} />}
+        {EFFECTS.shatter && <Shatter sc={sc} />}
+        {EFFECTS.particles && <Particles sc={sc} />}
+        {EFFECTS.core && <Core sc={sc} />}
         <Campus />
       </Canvas>
     </div>
