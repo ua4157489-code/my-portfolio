@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import * as THREE from "three";
 import Shatter from "./Shatter";
 import Campus from "./Campus";
+import SectionObjects from "./SectionObjects";
 import { EFFECTS } from "@/data/effects";
 
 type Shared = RefObject<{ s: number; idx: number; vel: number }>;
@@ -174,6 +175,7 @@ export default function Scene() {
         {EFFECTS.particles && <Particles sc={sc} />}
         {EFFECTS.core && <Core sc={sc} />}
         <Campus />
+        {EFFECTS.sectionObjects && <SectionObjects />}
       </Canvas>
     </div>
   );
