@@ -1,3 +1,4 @@
+import About from "@/components/About";
 import Hero from "@/components/Hero";
 import Shatter2D from "@/components/Shatter2D";
 import { EFFECTS } from "@/data/effects";
@@ -40,28 +41,7 @@ export default function Home() {
       <Hero />
 
       <div className="relative z-10">
-        <section id="about" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-          <Reveal>
-            <Heading>about</Heading>
-            <div className="max-w-2xl overflow-hidden rounded border border-green-900 bg-black/60">
-              <div className="flex items-center gap-2 border-b border-green-900 px-4 py-2 text-xs text-green-700">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
-                <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
-                <span className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
-                <span className="ml-2">about.txt</span>
-              </div>
-              <div className="space-y-4 p-6 text-green-300">
-                <p className="text-green-600">$ cat about.txt</p>
-                {ABOUT.map((p) => (
-                  <p key={p}>{p}</p>
-                ))}
-                <p className="text-green-600">
-                  $ <span className="animate-pulse">▌</span>
-                </p>
-              </div>
-            </div>
-          </Reveal>
-        </section>
+        <About />
 
         <Education />
 

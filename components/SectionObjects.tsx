@@ -4,6 +4,7 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import type { ReactNode, RefObject } from "react";
 import * as THREE from "three";
+import PhotoCloud from "./PhotoCloud";
 
 type V3 = [number, number, number];
 type Fade = RefObject<{ w: number }>;
@@ -285,8 +286,8 @@ function Stage({
 export default function SectionObjects() {
   return (
     <>
-      <Stage id="about" x={-0.3} color="#00c8ff">
-        {(m) => <Padlock mats={m} />}
+      <Stage id="about" x={0.27} color="#00ff9c">
+        {(m, f) => <PhotoCloud fade={f} />}
       </Stage>
       <Stage id="skills" x={0.3} color="#a855f7">
         {(m) => <Network mats={m} />}

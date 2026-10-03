@@ -2,17 +2,8 @@ export const NAME = "Umar Ali";
 export const TITLE = "Cybersecurity & DevOps";
 
 // TODO: replace with your own words
-export const ABOUT = [
-  "I'm interested in securing systems and automating infrastructure. I build hands-on labs, tools, and pipelines to learn how things break and how to defend them.",
-  "This site is where I collect that work: projects, experiments, and write-ups.",
-];
 
 // TODO: keep only what's true for you
-export const SKILLS = [
-  { group: "Security", items: ["Vulnerability Assessment", "Network Security", "Linux", "Threat Modeling"] },
-  { group: "DevOps", items: ["Git & GitHub", "CI/CD", "Docker", "Automation"] },
-  { group: "Development", items: ["Python", "Bash", "TypeScript", "Next.js"] },
-];
 
 // TODO: write a real one-line description for each project
 export const PROJECTS = [
@@ -56,5 +47,39 @@ export const EDUCATION = [
     school: "Rukhsana Foundation",
     period: "",
     details: [],
+  },
+];
+
+export const ABOUT = [
+  "I am a cybersecurity enthusiast focused on Offensive Security, Red Teaming, and Vulnerability Assessment, with a strong interest in identifying and understanding real-world security weaknesses.",
+  "I have hands-on experience working with Linux, Python, Docker, Git/GitHub, Nmap, Burp Suite, OWASP ZAP, Wireshark, Metasploit, and Wazuh, along with practical cybersecurity labs covering web application security, network security, vulnerability assessment, SIEM, and incident response.",
+  "Currently, I am building a structured cybersecurity portfolio through hands-on labs and security projects, with a focus on developing practical skills in reconnaissance, vulnerability discovery, web application testing, exploitation concepts, security monitoring, and reporting.",
+  "I am particularly interested in Red Team operations and offensive security, while continuing to strengthen my foundations in networking, Linux, scripting, cloud security, and defensive security.",
+  "I am always looking for opportunities to learn from experienced security professionals, work on real-world security challenges, and contribute to a professional cybersecurity team.",
+];
+
+export const CORE_AREAS = [
+  { icon: "🔴", label: "Offensive Security & Red Teaming" },
+  { icon: "🌐", label: "Web Application Security" },
+  { icon: "🔍", label: "Vulnerability Assessment" },
+  { icon: "🐧", label: "Linux & Networking" },
+  { icon: "🛡️", label: "SIEM & Security Monitoring" },
+  { icon: "🐍", label: "Python & Automation" },
+  { icon: "☁️", label: "Cloud Security" },
+  { icon: "📊", label: "Security Documentation & Reporting" },
+];
+
+export const SKILLS = [
+  {
+    group: "Offensive Security",
+    items: ["Reconnaissance", "Vulnerability Discovery", "Web Application Testing", "Exploitation Concepts"],
+  },
+  {
+    group: "Tools",
+    items: ["Nmap", "Burp Suite", "OWASP ZAP", "Wireshark", "Metasploit", "Wazuh"],
+  },
+  {
+    group: "Foundations",
+    items: ["Linux", "Python", "Docker", "Git & GitHub", "Networking", "Cloud Security"],
   },
 ];
