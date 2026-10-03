@@ -170,7 +170,7 @@ export default function Scene() {
     <div className="fixed inset-0 z-0 bg-black">
       <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 1.5]}>
         <Rig sc={sc} />
-        {EFFECTS.stars && <Stars radius={80} depth={50} count={800} factor={3} fade speed={0.4} />}
+        {EFFECTS.stars && <Stars radius={80} depth={50} count={3000} factor={4} fade speed={1} />}
         {EFFECTS.shatter && <Shatter sc={sc} />}
         {EFFECTS.particles && <Particles sc={sc} />}
         {EFFECTS.core && <Core sc={sc} />}
