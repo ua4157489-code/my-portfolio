@@ -6,6 +6,7 @@ import { useMemo, useRef } from "react";
 import type { RefObject } from "react";
 import * as THREE from "three";
 import Shatter from "./Shatter";
+import Campus from "./Campus";
 
 type Shared = RefObject<{ s: number; idx: number; vel: number }>;
 
@@ -15,9 +16,9 @@ const PURPLE = new THREE.Color("#a855f7");
 
 // where the object sits for each section: top, about, skills, projects, contact
 const IDS = ["top", "about", "education", "skills", "projects", "contact"];
-const X = [0, 0.3, -0.3, 0.3, -0.3, 0]; // fraction of screen width
-const Y = [0, 0.04, -0.04, 0.04, -0.04, 0]; // fraction of screen height
-const SCALE = [1, 0.8, 0.8, 0.8, 0.8, 1.2];
+const X = [0, 0.3, 0.42, -0.3, 0.3, 0]; // fraction of screen width
+const Y = [0, 0.04, 0.3, -0.04, 0.04, 0]; // fraction of screen height
+const SCALE = [1, 0.8, 0.45, 0.8, 0.8, 1.2];
 
 function scrollProgress() {
   const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -171,6 +172,7 @@ export default function Scene() {
         <Shatter sc={sc} />
         <Particles sc={sc} />
         <Core sc={sc} />
+        <Campus />
       </Canvas>
     </div>
   );

@@ -44,21 +44,17 @@ export const ROLES = [
   "Learning by breaking things (in labs)",
 ];
 
-// TODO: replace with your real education (newest first)
 export const EDUCATION = [
   {
-    degree: "Your Degree / Program",
-    school: "Your University or Institute",
-    period: "2023 - Present",
-    details: [
-      "Add a highlight, such as relevant coursework or focus area",
-      "Add another, such as a project, society, or achievement",
-    ],
+    degree: "Diploma in Cloud Cyber Security",
+    school: "Al Nafi International College",
+    period: "Aug 2025 - Jul 2026",
+    details: ["Field of study: Cyber Security"],
   },
   {
-    degree: "Previous Education or Certification",
-    school: "Institution or Platform",
-    period: "Year",
+    degree: "FSC, Pre-Engineering",
+    school: "Rukhsana Foundation",
+    period: "",
     details: [],
   },
 ];
