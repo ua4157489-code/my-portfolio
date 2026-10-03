@@ -1,3 +1,4 @@
+import CustomCursor from "@/components/CustomCursor";
 import Scene from "@/components/Scene";
 import MatrixRain from "@/components/MatrixRain";
 import BootScreen from "@/components/BootScreen";
@@ -24,6 +25,7 @@ export default function Home() {
   return (
     <main className="relative font-mono text-green-400">
       <BootScreen />
+      <CustomCursor />
       <div className="crt" />
       <Scene />
       <MatrixRain />

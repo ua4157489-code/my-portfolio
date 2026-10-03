@@ -86,3 +86,10 @@ html { scroll-behavior: smooth; }
     display: none;
   }
 }
+
+/* custom cursor: only applied when CustomCursor is mounted on a mouse device */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button {
+  cursor: none;
+}
