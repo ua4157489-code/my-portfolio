@@ -1,3 +1,4 @@
+import Hero from "@/components/Hero";
 import Shatter2D from "@/components/Shatter2D";
 import { EFFECTS } from "@/data/effects";
 import CustomCursor from "@/components/CustomCursor";
@@ -36,29 +37,7 @@ export default function Home() {
       <Navbar />
       <ScrollBar />
 
-      <section
-        id="top"
-        className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center"
-      >
-        <p className="mb-4 text-sm tracking-widest text-green-600">$ whoami</p>
-        <h1 className="glitch glow text-5xl font-bold md:text-7xl" data-text={NAME}>
-          <ScrambleText text={NAME} delay={1500} />
-        </h1>
-        <p className="mt-4 min-h-[2rem] text-xl text-green-300 md:text-2xl">
-          <span className="text-green-700">&gt; </span>
-          <Typewriter phrases={ROLES} />
-        </p>
-        <div className="mt-10 flex gap-4">
-          <a href={CONTACT.github} className={btn}>GitHub</a>
-          <a href="#projects" className={btn}>Projects</a>
-        </div>
-        <a
-          href="#about"
-          className="absolute bottom-8 animate-bounce text-xs tracking-widest text-green-600"
-        >
-          ↓ scroll
-        </a>
-      </section>
+      <Hero />
 
       <div className="relative z-10">
         <section id="about" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">

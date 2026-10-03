@@ -99,7 +99,7 @@ export default function Shatter({ sc }: { sc: RefObject<{ s: number }> }) {
   });
 
   return (
-    <group ref={group} position={[0, 0, -3]}>
+    <group ref={group} position={[3.5, 0, -3]}>
       <mesh geometry={data.geo} frustumCulled={false}>
         <meshBasicMaterial ref={wire} color="#00ff9c" wireframe transparent opacity={0.45} />
       </mesh>
