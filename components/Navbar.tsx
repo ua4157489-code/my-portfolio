@@ -5,6 +5,7 @@ import { NAME } from "@/data/content";
 
 const LINKS = [
   { id: "about", label: "about" },
+  { id: "education", label: "education" },
   { id: "skills", label: "skills" },
   { id: "projects", label: "projects" },
   { id: "contact", label: "contact" },

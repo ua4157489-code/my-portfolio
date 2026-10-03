@@ -7,6 +7,7 @@ import Typewriter from "@/components/Typewriter";
 import Navbar from "@/components/Navbar";
 import ScrollBar from "@/components/ScrollBar";
 import Reveal from "@/components/Reveal";
+import Education from "@/components/Education";
 import { NAME, ROLES, ABOUT, SKILLS, PROJECTS, CONTACT } from "@/data/content";
 
 function Heading({ children }: { children: string }) {
@@ -79,6 +80,8 @@ export default function Home() {
             </div>
           </Reveal>
         </section>
+
+        <Education />
 
         <section id="skills" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
           <Reveal>

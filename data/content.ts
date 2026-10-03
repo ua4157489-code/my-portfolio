@@ -43,3 +43,22 @@ export const ROLES = [
   "Building secure pipelines",
   "Learning by breaking things (in labs)",
 ];
+
+// TODO: replace with your real education (newest first)
+export const EDUCATION = [
+  {
+    degree: "Your Degree / Program",
+    school: "Your University or Institute",
+    period: "2023 - Present",
+    details: [
+      "Add a highlight, such as relevant coursework or focus area",
+      "Add another, such as a project, society, or achievement",
+    ],
+  },
+  {
+    degree: "Previous Education or Certification",
+    school: "Institution or Platform",
+    period: "Year",
+    details: [],
+  },
+];
