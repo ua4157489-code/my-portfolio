@@ -36,3 +36,10 @@ export const CONTACT = {
   github: "https://github.com/ua4157489-code",
   linkedin: "",
 };
+
+// TODO: edit these, they cycle in the typing line under your name
+export const ROLES = [
+  "Cybersecurity & DevOps",
+  "Building secure pipelines",
+  "Learning by breaking things (in labs)",
+];
