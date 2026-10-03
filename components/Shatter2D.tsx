@@ -165,7 +165,7 @@ export default function Shatter2D() {
       mouse.y += (mouse.ty - mouse.y) * 0.05;
 
       const R = Math.min(w, h) * 0.34;
-      const ox = (w > 900 ? w * 0.7 : w * 0.5) + mouse.x * 30;
+      const ox = (w > 900 ? w * 0.72 : w * 0.5) + mouse.x * 30;
       const oy = h * 0.5 + mouse.y * 20;
       const rot = reduce ? 0 : t * 0.08 + b * 0.6;
       const cosR = Math.cos(rot);

@@ -18,9 +18,9 @@ const PURPLE = new THREE.Color("#a855f7");
 
 // where the object sits for each section: top, about, skills, projects, contact
 const IDS = ["top", "about", "education", "skills", "projects", "contact"];
-const X = [0.28, 0.3, 0.42, -0.3, 0.3, 0]; // fraction of screen width
-const Y = [0, 0.04, 0.3, -0.04, 0.04, 0]; // fraction of screen height
-const SCALE = [1, 0.8, 0.45, 0.8, 0.8, 1.2];
+const X = [-0.27, 0.3, 0.42, -0.3, 0.3, 0]; // fraction of screen width
+const Y = [-0.36, 0.04, 0.3, -0.04, 0.04, 0]; // fraction of screen height
+const SCALE = [0.5, 0.8, 0.45, 0.8, 0.8, 1.2];
 
 function scrollProgress() {
   const max = document.documentElement.scrollHeight - window.innerHeight;
