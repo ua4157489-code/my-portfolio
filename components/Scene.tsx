@@ -5,6 +5,7 @@ import { Float, Stars } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { RefObject } from "react";
 import * as THREE from "three";
+import Shatter from "./Shatter";
 
 type Shared = RefObject<{ s: number; idx: number; vel: number }>;
 
@@ -167,6 +168,7 @@ export default function Scene() {
       <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 1.5]}>
         <Rig sc={sc} />
         <Stars radius={80} depth={50} count={3000} factor={4} fade speed={1} />
+        <Shatter sc={sc} />
         <Particles sc={sc} />
         <Core sc={sc} />
       </Canvas>
