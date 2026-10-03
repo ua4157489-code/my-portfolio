@@ -13,7 +13,7 @@ export default function Hero() {
       id="top"
       className="relative z-10 flex min-h-screen items-center px-6 pt-24 md:pl-[5vw] md:pr-6"
     >
-      <div className="relative w-full max-w-xl rounded-2xl border border-green-900/60 bg-black/50 p-7 shadow-[0_0_60px_rgba(0,255,156,0.08)] backdrop-blur-md md:p-10">
+      <div className="relative w-full max-w-xl rounded-2xl border border-green-900/60 bg-black/90 p-7 shadow-[0_0_60px_rgba(0,255,156,0.08)] md:p-10">
         {/* HUD corner brackets */}
         <span className={`${corner} -left-px -top-px border-l-2 border-t-2`} />
         <span className={`${corner} -right-px -top-px border-r-2 border-t-2`} />
