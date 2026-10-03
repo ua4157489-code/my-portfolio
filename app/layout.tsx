@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Umer Rali - Cybersecurity and DevOps",
-  description: "Portfolio of Umer Rali: cybersecurity and DevOps projects, labs, and tools.",
+  title: "Umar Ali - Cybersecurity and DevOps",
+  description: "Portfolio of Umar Ali: cybersecurity and DevOps projects, labs, and tools.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

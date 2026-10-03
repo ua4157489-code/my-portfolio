@@ -1,4 +1,4 @@
-export const NAME = "Umer Rali";
+export const NAME = "Umar Ali";
 export const TITLE = "Cybersecurity & DevOps";
 
 // TODO: replace with your own words
