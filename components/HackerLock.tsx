@@ -1,3 +1,99 @@
+"use client";
+
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import type { RefObject } from "react";
+import * as THREE from "three";
+
+type Shared = RefObject<{ s: number }>;
+
+const GREEN = new THREE.Color("#00ff9c");
+const RED = new THREE.Color("#ff2d6f");
+const IMPACT = new THREE.Vector3(0, -0.35, 0.5); // the keyhole: the crack starts here
+
+// deterministic pseudo-random so the shards are the same every load
+function rand(i: number) {
+  const x = Math.sin(i * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+// a padlock made of about 1,100 triangular shards
+function buildLock() {
+  const parts: THREE.BufferGeometry[] = [];
+
+  const body = new THREE.BoxGeometry(2.6, 2.0, 0.9, 10, 8, 3).toNonIndexed();
+  body.translate(0, -0.5, 0);
+  parts.push(body);
+
+  const shackle = new THREE.TorusGeometry(0.85, 0.2, 10, 28, Math.PI).toNonIndexed();
+  shackle.translate(0, 0.5, 0);
+  parts.push(shackle);
+
+  const hole = new THREE.CylinderGeometry(0.22, 0.22, 0.1, 14).toNonIndexed();
+  hole.rotateX(Math.PI / 2);
+  hole.translate(0, -0.35, 0.47);
+  parts.push(hole);
+
+  const slot = new THREE.BoxGeometry(0.14, 0.5, 0.1).toNonIndexed();
+  slot.translate(0, -0.75, 0.47);
+  parts.push(slot);
+
+  const all: number[] = [];
+  for (const g of parts) {
+    const a = g.attributes.position.array as Float32Array;
+    for (let i = 0; i < a.length; i++) all.push(a[i]);
+  }
+  const orig = new Float32Array(all);
+  const faces = orig.length / 9;
+
+  const centers = new Float32Array(faces * 3);
+  const dirs = new Float32Array(faces * 3);
+  const axes = new Float32Array(faces * 3);
+  const speeds = new Float32Array(faces);
+  const spins = new Float32Array(faces);
+  const delays = new Float32Array(faces);
+  const dist = new Float32Array(faces);
+
+  const c = new THREE.Vector3();
+  const d = new THREE.Vector3();
+  let maxDist = 0;
+
+  for (let f = 0; f < faces; f++) {
+    const o = f * 9;
+    c.set(
+      (orig[o] + orig[o + 3] + orig[o + 6]) / 3,
+      (orig[o + 1] + orig[o + 4] + orig[o + 7]) / 3,
+      (orig[o + 2] + orig[o + 5] + orig[o + 8]) / 3
+    );
+    centers.set([c.x, c.y, c.z], f * 3);
+    dist[f] = c.distanceTo(IMPACT);
+    maxDist = Math.max(maxDist, dist[f]);
+
+    // fly outward from the keyhole with some random wobble
+    d.copy(c).sub(IMPACT).normalize();
+    d.x += (rand(f * 3 + 1) - 0.5) * 0.7;
+    d.y += (rand(f * 3 + 2) - 0.5) * 0.7;
+    d.z += (rand(f * 3 + 3) - 0.5) * 0.7 + 0.2;
+    d.normalize();
+    dirs.set([d.x, d.y, d.z], f * 3);
+
+    d.set(rand(f * 5 + 2) - 0.5, rand(f * 5 + 3) - 0.5, rand(f * 5 + 4) - 0.5).normalize();
+    axes.set([d.x, d.y, d.z], f * 3);
+
+    speeds[f] = 0.5 + rand(f * 7 + 5) * 1.3;
+    spins[f] = (rand(f * 11 + 6) - 0.5) * 7;
+  }
+  // shards near the keyhole break first, far ones later
+  for (let f = 0; f < faces; f++) delays[f] = (dist[f] / (maxDist || 1)) * 0.4;
+
+  const geo = new THREE.BufferGeometry();
+  const pos = new THREE.BufferAttribute(new Float32Array(orig), 3);
+  pos.setUsage(THREE.DynamicDrawUsage);
+  geo.setAttribute("position", pos);
+
+  return { geo, orig, centers, dirs, axes, speeds, spins, delays, faces };
+}
+
 const _v = new THREE.Vector3();
 const _axis = new THREE.Vector3();
 const _q = new THREE.Quaternion();
