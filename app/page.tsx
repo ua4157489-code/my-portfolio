@@ -1,3 +1,4 @@
+import SocialLinks from "@/components/SocialLinks";
 import BackToTop from "@/components/BackToTop";
 import TerminalWidget from "@/components/TerminalWidget";
 import Contact from "@/components/Contact";
@@ -77,6 +78,7 @@ export default function Home() {
         <Contact />
 
         <footer className="border-t border-green-900/50 py-8 text-center text-xs text-green-700">
+          <SocialLinks className="mb-4 justify-center" />
           © {new Date().getFullYear()} {NAME}
         </footer>
       </div>

@@ -1,3 +1,4 @@
+import SocialLinks from "@/components/SocialLinks";
 import ScrambleText from "@/components/ScrambleText";
 import Typewriter from "@/components/Typewriter";
 import { NAME, ROLES, CONTACT } from "@/data/content";
@@ -69,6 +70,8 @@ export default function Hero() {
             GitHub
           </a>
         </div>
+
+        <SocialLinks className="mt-6" />
       </div>
 
       <div className="absolute inset-x-0 bottom-8 flex justify-center">

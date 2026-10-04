@@ -1,3 +1,125 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import {
+  NAME,
+  ROLES,
+  ABOUT,
+  SKILLS,
+  PROJECTS,
+  EDUCATION,
+  CONTACT,
+} from "@/data/content";
+
+const RESUME_URL = "/resume.pdf";
+const SECTIONS = ["top", "about", "education", "skills", "projects", "contact"];
+const COMMANDS = [
+  "help", "whoami", "about", "skills", "projects", "education", "contact",
+  "ls", "cd", "clear", "neofetch", "nmap", "github", "resume", "date", "echo", "sudo",
+];
+
+type Line = { kind: "in" | "out"; text: string };
+
+const WELCOME = [
+  "Welcome to " + NAME + "'s terminal.",
+  "Type 'help' to see commands. Tab completes, up/down browse history.",
+];
+
+function scrollToId(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function execute(raw: string): string[] | "clear" {
+  const parts = raw.trim().split(/\s+/);
+  const cmd = (parts[0] || "").toLowerCase();
+  const arg = parts.slice(1).join(" ");
+
+  switch (cmd) {
+    case "":
+      return [];
+    case "clear":
+      return "clear";
+    case "help":
+      return [
+        "Commands:",
+        "  whoami              short intro",
+        "  about               about me",
+        "  skills              skills and tools",
+        "  projects            list projects",
+        "  education           education",
+        "  contact             contact links",
+        "  ls                  list sections",
+        "  cd <section>        jump to a section (try: cd projects)",
+        "  neofetch            profile summary",
+        "  nmap <host>         simulated port scan, just for fun",
+        "  github | resume     open links",
+        "  date | echo <text>  utilities",
+        "  clear               clear the screen",
+      ];
+    case "whoami":
+      return [NAME + " - " + ROLES[0]];
+    case "about":
+      return ABOUT;
+    case "skills":
+      return SKILLS.flatMap((s) => ["[" + s.group + "]", "  " + s.items.join(", ")]);
+    case "projects":
+      return PROJECTS.map((p) => "- " + p.name + ": " + p.description + "\n  " + p.href);
+    case "education":
+      return EDUCATION.map(
+        (e) => e.degree + " - " + e.school + (e.period ? " (" + e.period + ")" : "")
+      );
+    case "contact":
+      return [
+        CONTACT.email ? "email:    " + CONTACT.email : "email:    (not set yet)",
+        "github:   " + CONTACT.github,
+        CONTACT.linkedin ? "linkedin: " + CONTACT.linkedin : "linkedin: (not set yet)",
+      ];
+    case "ls":
+      return [SECTIONS.map((s) => s + "/").join("  ")];
+    case "cd": {
+      const target = arg.replace(/^\.?\//, "").replace(/\/$/, "").toLowerCase();
+      const id = target === "" || target === "~" ? "top" : target === "edu" ? "education" : target;
+      if (!SECTIONS.includes(id)) return ["cd: no such section: " + arg];
+      scrollToId(id);
+      return ["-> ./" + id];
+    }
+    case "neofetch":
+      return [
+        NAME.toLowerCase().replace(/\s+/g, "") + "@sec",
+        "-----------------",
+        "Role:      " + ROLES[0],
+        "Focus:     Offensive Security, Red Teaming, Vulnerability Assessment",
+        "Education: " + (EDUCATION[0]?.school ?? "-"),
+        "Tools:     " + (SKILLS.find((s) => s.group === "Tools")?.items.join(", ") ?? "-"),
+      ];
+    case "nmap": {
+      const host = arg || "localhost";
+      return [
+        "Starting simulated scan of " + host + " (no real network traffic)",
+        "PORT      STATE     SERVICE",
+        "22/tcp    closed    ssh",
+        "80/tcp    open      http",
+        "443/tcp   open      https",
+        "8080/tcp  filtered  http-proxy",
+        "Scan complete: 1 host up (simulated).",
+      ];
+    }
+    case "github":
+      window.open(CONTACT.github, "_blank");
+      return ["opening github..."];
+    case "resume":
+      window.open(RESUME_URL, "_blank");
+      return ["opening resume..."];
+    case "date":
+      return [new Date().toString()];
+    case "echo":
+      return [arg];
+    case "sudo":
+      return ["Nice try. This incident will be reported. ;)"];
+    default:
+      return ["command not found: " + cmd + ". Type 'help'."];
+  }
+}
 
 export default function TerminalWidget() {
   const [open, setOpen] = useState(false);

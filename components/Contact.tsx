@@ -1,3 +1,4 @@
+import SocialLinks from "@/components/SocialLinks";
 "use client";
 
 import { useState } from "react";
@@ -76,27 +77,8 @@ export default function Contact() {
               >
                 Copy email
               </button>
-              {CONTACT.github && (
-                <a
-                  href={CONTACT.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded border border-cyan-300 px-5 py-2 text-sm text-cyan-200 transition hover:bg-cyan-300 hover:text-black"
-                >
-                  GitHub
-                </a>
-              )}
-              {CONTACT.linkedin && (
-                <a
-                  href={CONTACT.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded border border-cyan-300 px-5 py-2 text-sm text-cyan-200 transition hover:bg-cyan-300 hover:text-black"
-                >
-                  LinkedIn
-                </a>
-              )}
             </div>
+            <SocialLinks className="mt-6" />
             {!CONTACT.email && (
               <p className="mt-6 rounded border border-yellow-500/40 bg-yellow-500/5 p-3 text-xs text-yellow-300">
                 Your email is not set yet. Add it as <code>CONTACT.email</code> in{" "}

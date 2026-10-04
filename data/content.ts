@@ -22,11 +22,6 @@ export const PROJECTS = [
 ];
 
 // Leave a value empty ("") to hide that link
-export const CONTACT = {
-  email: "",
-  github: "https://github.com/ua4157489-code",
-  linkedin: "",
-};
 
 // TODO: edit these, they cycle in the typing line under your name
 export const ROLES = [
@@ -83,3 +78,11 @@ export const SKILLS = [
     items: ["Linux", "Python", "Docker", "Git & GitHub", "Networking", "Cloud Security"],
   },
 ];
+
+export const CONTACT = {
+  email: "ua4157489@gmail.com",
+  github: "https://github.com/ua4157489-code",
+  linkedin: "https://www.linkedin.com/in/umar-ali-ba935031b/",
+  instagram: "https://www.instagram.com/wdym_.umrii/",
+  facebook: "https://www.facebook.com/wdymumrii7",
+};
