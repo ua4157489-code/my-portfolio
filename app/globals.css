@@ -93,3 +93,39 @@ html { scroll-behavior: smooth; }
 .has-custom-cursor button {
   cursor: none;
 }
+
+/* ---------- layout upgrade ---------- */
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(0, 255, 156, 0.55);
+}
+
+.marquee {
+  animation: marquee 70s linear infinite;
+}
+.marquee:hover {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+section[id]:not(#top) {
+  position: relative;
+}
+section[id]:not(#top)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.5rem;
+  right: 1.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 156, 0.45), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    animation: none;
+  }
+}

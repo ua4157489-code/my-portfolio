@@ -1,3 +1,5 @@
+import Marquee from "@/components/Marquee";
+import HudFrame from "@/components/HudFrame";
 import Skills from "@/components/Skills";
 import BackToTop from "@/components/BackToTop";
 import TerminalWidget from "@/components/TerminalWidget";
@@ -41,11 +43,13 @@ export default function Home() {
       {EFFECTS.shatter2d && <Shatter2D />}
       {EFFECTS.matrixRain && <MatrixRain />}
       <Navbar />
+      <HudFrame />
       <BackToTop />
       <TerminalWidget />
       <ScrollBar />
 
       <Hero />
+      <Marquee />
 
       <div className="relative z-10">
         <About />

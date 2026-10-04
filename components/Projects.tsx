@@ -1,5 +1,6 @@
 "use client";
 
+import SectionTitle from "@/components/SectionTitle";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { PROJECTS, CONTACT } from "@/data/content";
@@ -93,9 +94,7 @@ export default function Projects() {
 
   return (
     <section id="projects" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-      <h2 className="glow mb-6 text-3xl font-bold text-green-400">
-        <span className="text-green-700">$ </span>projects
-      </h2>
+      <SectionTitle label="projects" />
 
       <div className="mb-8 space-y-4">
         <div className="flex flex-wrap items-center gap-4">

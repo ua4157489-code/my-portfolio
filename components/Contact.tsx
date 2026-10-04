@@ -1,4 +1,5 @@
 "use client";
+import SectionTitle from "@/components/SectionTitle";
 import SocialLinks from "@/components/SocialLinks";
 
 import { useState } from "react";
@@ -60,9 +61,7 @@ export default function Contact() {
   return (
     <section id="contact" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
       <Reveal>
-        <h2 className="glow mb-10 text-3xl font-bold text-green-400">
-          <span className="text-green-700">$ </span>contact
-        </h2>
+        <SectionTitle label="contact" />
 
         <div className="grid gap-10 md:grid-cols-2">
           <div>

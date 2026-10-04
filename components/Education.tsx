@@ -1,3 +1,4 @@
+import SectionTitle from "@/components/SectionTitle";
 import Reveal from "@/components/Reveal";
 import { EDUCATION } from "@/data/content";
 
@@ -5,9 +6,7 @@ export default function Education() {
   return (
     <section id="education" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
       <Reveal>
-        <h2 className="glow mb-10 text-3xl font-bold text-green-400">
-          <span className="text-green-700">$ </span>education
-        </h2>
+        <SectionTitle label="education" />
       </Reveal>
 
       <ol className="relative ml-3 border-l border-green-900">

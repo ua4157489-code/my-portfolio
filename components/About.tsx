@@ -1,3 +1,4 @@
+import SectionTitle from "@/components/SectionTitle";
 import Reveal from "@/components/Reveal";
 import { ABOUT, CORE_AREAS } from "@/data/content";
 
@@ -39,10 +40,8 @@ export default function About() {
   return (
     <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-28">
       <Reveal>
-        <div className="mb-12 flex items-end justify-between gap-6 border-b border-green-900/60 pb-4">
-          <h2 className="glow text-3xl font-bold text-green-400">
-            <span className="text-green-700">$ </span>about
-          </h2>
+        <div className="flex items-end justify-between gap-6">
+          <SectionTitle label="about" />
           <p className="hidden text-xs tracking-widest text-green-700 sm:block">
             // profile.md
           </p>
