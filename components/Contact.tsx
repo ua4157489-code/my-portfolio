@@ -1,5 +1,5 @@
-import SocialLinks from "@/components/SocialLinks";
 "use client";
+import SocialLinks from "@/components/SocialLinks";
 
 import { useState } from "react";
 import Reveal from "@/components/Reveal";
