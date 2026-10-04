@@ -1,3 +1,4 @@
+import Skills from "@/components/Skills";
 import BackToTop from "@/components/BackToTop";
 import TerminalWidget from "@/components/TerminalWidget";
 import Contact from "@/components/Contact";
@@ -51,26 +52,7 @@ export default function Home() {
 
         <Education />
 
-        <section id="skills" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-          <Reveal>
-            <Heading>skills</Heading>
-            <div className="grid gap-6 md:grid-cols-3">
-              {SKILLS.map((s) => (
-                <div
-                  key={s.group}
-                  className="rounded border border-green-900 bg-black/50 p-6 transition hover:border-green-400 hover:shadow-[0_0_25px_rgba(0,255,156,0.15)]"
-                >
-                  <h3 className="mb-4 font-bold text-green-300">{s.group}</h3>
-                  <ul className="space-y-2 text-sm text-green-500">
-                    {s.items.map((i) => (
-                      <li key={i}>&gt; {i}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </section>
+        <Skills />
 
         <Projects />
 

@@ -1,3 +1,4 @@
+import { SKILL_GROUPS } from "./skills";
 export const NAME = "Umar Ali";
 export const TITLE = "Cybersecurity & DevOps";
 
@@ -64,20 +65,6 @@ export const CORE_AREAS = [
   { icon: "📊", label: "Security Documentation & Reporting" },
 ];
 
-export const SKILLS = [
-  {
-    group: "Offensive Security",
-    items: ["Reconnaissance", "Vulnerability Discovery", "Web Application Testing", "Exploitation Concepts"],
-  },
-  {
-    group: "Tools",
-    items: ["Nmap", "Burp Suite", "OWASP ZAP", "Wireshark", "Metasploit", "Wazuh"],
-  },
-  {
-    group: "Foundations",
-    items: ["Linux", "Python", "Docker", "Git & GitHub", "Networking", "Cloud Security"],
-  },
-];
 
 export const CONTACT = {
   email: "ua4157489@gmail.com",
@@ -86,3 +73,8 @@ export const CONTACT = {
   instagram: "https://www.instagram.com/wdym_.umrii/",
   facebook: "https://www.facebook.com/wdymumrii7",
 };
+
+export const SKILLS = SKILL_GROUPS.map((g) => ({
+  group: g.group,
+  items: g.skills.map((s) => s.name),
+}));
