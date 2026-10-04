@@ -1,3 +1,7 @@
+import BackToTop from "@/components/BackToTop";
+import TerminalWidget from "@/components/TerminalWidget";
+import Contact from "@/components/Contact";
+import Projects from "@/components/Projects";
 import About from "@/components/About";
 import Hero from "@/components/Hero";
 import Shatter2D from "@/components/Shatter2D";
@@ -36,6 +40,8 @@ export default function Home() {
       {EFFECTS.shatter2d && <Shatter2D />}
       {EFFECTS.matrixRain && <MatrixRain />}
       <Navbar />
+      <BackToTop />
+      <TerminalWidget />
       <ScrollBar />
 
       <Hero />
@@ -66,50 +72,9 @@ export default function Home() {
           </Reveal>
         </section>
 
-        <section id="projects" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-          <Heading>projects</Heading>
-          <div className="grid gap-6 md:grid-cols-2">
-            {PROJECTS.map((p, i) => (
-              <Reveal key={p.name} delay={i * 0.1}>
-                <a
-                  href={p.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block h-full rounded border border-green-900 bg-black/50 p-6 transition hover:border-green-400 hover:shadow-[0_0_25px_rgba(0,255,156,0.2)]"
-                >
-                  <h3 className="text-xl font-bold text-green-300 group-hover:text-green-400">
-                    {p.name}
-                  </h3>
-                  <p className="mt-3 text-sm text-green-500">{p.description}</p>
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {p.tags.map((t) => (
-                      <li
-                        key={t}
-                        className="rounded border border-green-900 px-2 py-0.5 text-xs text-green-600"
-                      >
-                        {t}
-                      </li>
-                    ))}
-                  </ul>
-                </a>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        <Projects />
 
-        <section id="contact" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-          <Reveal>
-            <Heading>contact</Heading>
-            <p className="mb-6 text-green-300">
-              Want to talk security, DevOps, or work together?
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {CONTACT.email && <a href={`mailto:${CONTACT.email}`} className={btn}>Email</a>}
-              {CONTACT.github && <a href={CONTACT.github} className={btn}>GitHub</a>}
-              {CONTACT.linkedin && <a href={CONTACT.linkedin} className={btn}>LinkedIn</a>}
-            </div>
-          </Reveal>
-        </section>
+        <Contact />
 
         <footer className="border-t border-green-900/50 py-8 text-center text-xs text-green-700">
           © {new Date().getFullYear()} {NAME}
