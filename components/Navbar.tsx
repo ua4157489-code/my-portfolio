@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { NAME, CONTACT } from "@/data/content";
+
+// TODO: put your CV in public/resume.pdf, or change this to your resume link
+const RESUME_URL = "/resume.pdf";
 
 const LINKS = [
   { id: "about", label: "about" },
@@ -12,92 +15,38 @@ const LINKS = [
   { id: "contact", label: "contact" },
 ];
 
-const focus =
-  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400";
+type Cmd = { label: string; hint: string; run: () => void };
 
-type Item = { label: string; hint: string; run: () => void };
+const go = (id: string) =>
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
 export default function Navbar() {
   const [active, setActive] = useState("");
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [open, setOpen] = useState(false);
   const [palette, setPalette] = useState(false);
   const [query, setQuery] = useState("");
-  const [sel, setSel] = useState(0);
-  const [toast, setToast] = useState("");
-  const lastY = useRef(0);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const reduce = useReducedMotion();
+  const [index, setIndex] = useState(0);
 
   const handle = NAME.toLowerCase().replace(/\s+/g, "");
 
-  const flash = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 1800);
-  };
-
-  // command palette items
-  const items = useMemo<Item[]>(() => {
-    const go = (id: string) => () =>
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    const list: Item[] = [
-      { label: "top", hint: "go to hero", run: go("top") },
-      ...LINKS.map((l) => ({ label: l.id, hint: "go to section", run: go(l.id) })),
-      { label: "resume", hint: "open resume.pdf", run: () => window.open("/resume.pdf", "_blank") },
-    ];
-    if (CONTACT.email) {
-      list.push(
-        { label: "email", hint: "write me an email", run: () => (window.location.href = `mailto:${CONTACT.email}`) },
-        {
-          label: "copy email",
-          hint: "copy address to clipboard",
-          run: async () => {
-            try {
-              await navigator.clipboard.writeText(CONTACT.email);
-              flash("email copied");
-            } catch {
-              flash("copy failed");
-            }
-          },
-        }
-      );
-    }
-    if (CONTACT.github)
-      list.push({ label: "github", hint: "open profile", run: () => window.open(CONTACT.github, "_blank", "noopener") });
-    if (CONTACT.linkedin)
-      list.push({ label: "linkedin", hint: "open profile", run: () => window.open(CONTACT.linkedin, "_blank", "noopener") });
-    return list;
-  }, []);
-
-  const filtered = items.filter((i) =>
-    `${i.label} ${i.hint}`.toLowerCase().includes(query.toLowerCase())
-  );
-
-  const runItem = (item?: Item) => {
-    if (!item) return;
-    setPalette(false);
-    setQuery("");
-    item.run();
-  };
-
-  // scroll: solid background, hide on scroll down, show on scroll up
+  // solid background after scrolling; hide on scroll down, show on scroll up
   useEffect(() => {
+    let lastY = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
       setScrolled(y > 20);
-      if (!open) {
-        if (y > lastY.current && y > 120) setHidden(true);
-        else if (y < lastY.current) setHidden(false);
-      }
-      lastY.current = y;
+      if (y > lastY && y > 120) setHidden(true);
+      else if (y < lastY) setHidden(false);
+      lastY = y;
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [open]);
+  }, []);
 
-  // highlight the section currently on screen
+  // highlight the section on screen
   useEffect(() => {
     const ids = ["top", ...LINKS.map((l) => l.id)];
     const els = ids
@@ -114,207 +63,204 @@ export default function Navbar() {
     return () => obs.disconnect();
   }, []);
 
-  // keyboard: Ctrl/Cmd+K toggles palette, Esc closes everything
+  // Ctrl/Cmd + K opens the command palette, Esc closes it
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setPalette((p) => !p);
         setQuery("");
-        setSel(0);
+        setIndex(0);
+        setPalette((p) => !p);
       } else if (e.key === "Escape") {
         setPalette(false);
-        setOpen(false);
       }
     };
-    const onResize = () => window.innerWidth >= 768 && setOpen(false);
     window.addEventListener("keydown", onKey);
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      window.removeEventListener("resize", onResize);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // lock body scroll while a menu is open
-  useEffect(() => {
-    document.body.style.overflow = open || palette ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open, palette]);
+  const commands: Cmd[] = useMemo(
+    () => [
+      { label: "./top", hint: "section", run: () => go("top") },
+      ...LINKS.map((l) => ({
+        label: `./${l.label}`,
+        hint: "section",
+        run: () => go(l.id),
+      })),
+      { label: "github", hint: "open link", run: () => window.open(CONTACT.github, "_blank") },
+      ...(CONTACT.linkedin
+        ? [{ label: "linkedin", hint: "open link", run: () => window.open(CONTACT.linkedin, "_blank") }]
+        : []),
+      ...(CONTACT.email
+        ? [{ label: "email", hint: "open mail", run: () => (window.location.href = `mailto:${CONTACT.email}`) }]
+        : []),
+      { label: "resume", hint: "open file", run: () => window.open(RESUME_URL, "_blank") },
+    ],
+    []
+  );
 
-  useEffect(() => {
-    if (palette) inputRef.current?.focus();
-  }, [palette]);
+  const results = commands.filter((c) =>
+    c.label.toLowerCase().includes(query.trim().toLowerCase())
+  );
 
-  const onPaletteKey = (e: React.KeyboardEvent) => {
+  const openPalette = () => {
+    setQuery("");
+    setIndex(0);
+    setPalette(true);
+    setOpen(false);
+  };
+  const closePalette = () => setPalette(false);
+
+  const onInputKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setSel((s) => Math.min(s + 1, filtered.length - 1));
+      setIndex((i) => Math.min(i + 1, Math.max(results.length - 1, 0)));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setSel((s) => Math.max(s - 1, 0));
+      setIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
-      runItem(filtered[sel]);
+      e.preventDefault();
+      results[index]?.run();
+      closePalette();
     }
   };
-
-  const bar = "block h-0.5 w-5 bg-current transition-all duration-300";
 
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-300 ${
-          hidden && !open ? "-translate-y-full" : ""
-        } ${
-          scrolled || open
-            ? "border-cyan-900/70 bg-black/80 backdrop-blur-md"
-            : "border-transparent bg-black/20 backdrop-blur-sm"
+        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ${
+          hidden && !open ? "-translate-y-full" : "translate-y-0"
         }`}
       >
-        <nav
-          aria-label="Primary"
-          className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 font-mono text-sm"
+        <div
+          className={`border-b transition-colors duration-300 ${
+            scrolled
+              ? "border-green-400/15 bg-black/70 backdrop-blur-xl"
+              : "border-transparent bg-black/10 backdrop-blur-sm"
+          }`}
         >
-          <a
-            href="#top"
-            onClick={() => setOpen(false)}
-            className={`flex items-center gap-1 rounded font-bold text-cyan-400 ${focus}`}
-          >
-            <span className="glow">{handle}@sec</span>
-            <span className="text-cyan-700">:~$</span>
-            <span className="animate-pulse">▌</span>
-          </a>
+          <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3 font-mono text-sm">
+            {/* logo: terminal prompt */}
+            <a href="#top" className="flex items-center gap-1 font-bold">
+              <span className="bg-gradient-to-r from-green-300 to-cyan-300 bg-clip-text text-transparent">
+                {handle}@sec
+              </span>
+              <span className="text-purple-400">:~$</span>
+              <span className="animate-pulse text-green-300">▌</span>
+            </a>
 
-          {/* desktop links with sliding highlight */}
-          <ul className="hidden items-center gap-1 md:flex">
-            {LINKS.map((l, i) => {
-              const isActive = active === l.id;
-              return (
+            {/* links with a pill that glides to the active section */}
+            <ul className="hidden items-center gap-1 rounded-full border border-green-400/10 bg-white/[0.03] p-1 md:flex">
+              {LINKS.map((l, i) => (
                 <li key={l.id}>
-                  <a
-                    href={`#${l.id}`}
-                    aria-current={isActive ? "true" : undefined}
-                    className={`relative block rounded px-3 py-1.5 transition-colors ${focus} ${
-                      isActive ? "text-cyan-300" : "text-cyan-600 hover:text-cyan-300"
-                    }`}
-                  >
-                    {isActive && (
+                  <a href={`#${l.id}`} className="group relative block rounded-full px-4 py-1.5">
+                    {active === l.id && (
                       <motion.span
                         layoutId="nav-pill"
-                        transition={
-                          reduce ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }
-                        }
-                        className="absolute inset-0 rounded bg-cyan-400/10 shadow-[inset_0_0_0_1px_rgba(0,200,255,0.4)]"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400/20 to-cyan-400/20 shadow-[0_0_18px_rgba(0,255,156,0.25)] ring-1 ring-green-400/50"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
                       />
                     )}
                     <span className="relative">
-                      <span className="text-cyan-800">0{i + 1}.</span> ./{l.label}
+                      <span className="text-cyan-400/70">0{i + 1}</span>{" "}
+                      <span
+                        className={
+                          active === l.id
+                            ? "text-green-100"
+                            : "text-slate-400 transition-colors group-hover:text-white"
+                        }
+                      >
+                        ./{l.label}
+                      </span>
                     </span>
                   </a>
                 </li>
-              );
-            })}
-          </ul>
+              ))}
+            </ul>
 
-          <div className="flex items-center gap-3">
-            <span className="hidden items-center gap-2 text-xs text-cyan-500 xl:flex">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
+            {/* status, search, resume */}
+            <div className="flex items-center gap-3">
+              <span className="hidden items-center gap-2 rounded-full border border-green-400/30 bg-green-400/10 px-3 py-1 text-xs text-green-200 xl:flex">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
+                </span>
+                open to work
               </span>
-              open to work
-            </span>
 
-            {/* palette button */}
-            <button
-              onClick={() => {
-                setPalette(true);
-                setQuery("");
-                setSel(0);
-              }}
-              aria-label="Open command palette"
-              className={`flex items-center gap-2 rounded border border-cyan-900 px-2.5 py-1.5 text-xs text-cyan-600 transition hover:border-cyan-400 hover:text-cyan-300 ${focus}`}
-            >
-              <span aria-hidden>⌕</span>
-              <kbd className="hidden text-cyan-800 lg:inline">Ctrl K</kbd>
-            </button>
+              <button
+                onClick={openPalette}
+                className="hidden items-center gap-2 rounded border border-cyan-400/30 bg-cyan-400/5 px-3 py-1.5 text-xs text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 lg:flex"
+              >
+                <span>Search</span>
+                <kbd className="rounded border border-cyan-400/30 px-1.5 text-[10px] text-cyan-300">
+                  Ctrl K
+                </kbd>
+              </button>
 
-            <a
-              href="/resume.pdf"
-              download
-              className={`hidden rounded border border-cyan-400 px-3 py-1.5 text-cyan-400 transition hover:bg-cyan-400 hover:text-black hover:shadow-[0_0_20px_rgba(0,200,255,0.6)] md:block ${focus}`}
-            >
-              ./resume
-            </a>
+              <a
+                href={RESUME_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden rounded bg-gradient-to-r from-green-400 to-cyan-400 px-4 py-1.5 text-xs font-bold text-black shadow-[0_0_18px_rgba(0,255,156,0.4)] transition hover:brightness-110 md:block"
+              >
+                ./resume
+              </a>
 
-            <button
-              onClick={() => setOpen((o) => !o)}
-              aria-label={open ? "Close menu" : "Open menu"}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              className={`flex flex-col gap-1.5 rounded p-2 text-cyan-400 md:hidden ${focus}`}
-            >
-              <span className={`${bar} ${open ? "translate-y-2 rotate-45" : ""}`} />
-              <span className={`${bar} ${open ? "opacity-0" : ""}`} />
-              <span className={`${bar} ${open ? "-translate-y-2 -rotate-45" : ""}`} />
-            </button>
-          </div>
-        </nav>
+              <button
+                onClick={() => setOpen(!open)}
+                aria-label="Toggle menu"
+                aria-expanded={open}
+                className="rounded border border-green-400/30 px-2 py-1 text-green-300 md:hidden"
+              >
+                {open ? "[x]" : "[≡]"}
+              </button>
+            </div>
+          </nav>
 
-        {/* mobile menu */}
-        <AnimatePresence>
+          {/* mobile menu */}
           {open && (
-            <motion.div
-              key="panel"
-              id="mobile-menu"
-              initial={{ opacity: 0, y: reduce ? 0 : -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduce ? 0 : -8 }}
-              transition={{ duration: reduce ? 0 : 0.2 }}
-              className="border-t border-cyan-900/70 bg-black/95 px-6 py-5 font-mono text-sm md:hidden"
-            >
-              <p className="mb-3 text-xs text-cyan-700">$ ls sections/</p>
+            <div className="border-t border-green-400/15 bg-black/90 px-6 py-4 font-mono text-sm md:hidden">
+              <p className="mb-3 text-xs text-purple-400">$ ls sections/</p>
               <ul className="space-y-1">
                 {LINKS.map((l, i) => (
                   <li key={l.id}>
                     <a
                       href={`#${l.id}`}
                       onClick={() => setOpen(false)}
-                      aria-current={active === l.id ? "true" : undefined}
-                      className={`block rounded px-3 py-2.5 ${focus} ${
-                        active === l.id ? "bg-cyan-400/10 text-cyan-300" : "text-cyan-500"
+                      className={`block rounded px-3 py-2 ${
+                        active === l.id
+                          ? "bg-gradient-to-r from-green-400/15 to-cyan-400/15 text-green-100"
+                          : "text-slate-300"
                       }`}
                     >
-                      <span className="text-cyan-800">0{i + 1}.</span> ./{l.label}
+                      <span className="text-cyan-400/70">0{i + 1}</span> ./{l.label}
                     </a>
                   </li>
                 ))}
               </ul>
-              <a
-                href="/resume.pdf"
-                download
-                onClick={() => setOpen(false)}
-                className={`mt-4 block rounded border border-cyan-400 px-3 py-2.5 text-center text-cyan-400 ${focus}`}
-              >
-                ./resume
-              </a>
-            </motion.div>
+              <div className="mt-4 flex gap-3">
+                <a
+                  href={RESUME_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 rounded bg-gradient-to-r from-green-400 to-cyan-400 px-3 py-2 text-center text-xs font-bold text-black"
+                >
+                  ./resume
+                </a>
+                <button
+                  onClick={openPalette}
+                  className="flex-1 rounded border border-cyan-400/40 px-3 py-2 text-xs text-cyan-200"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </header>
 
-      {/* tap-to-close backdrop for the mobile menu */}
-      {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
-          aria-hidden
-        />
-      )}
-
-      {/* command palette */}
+      {/* command palette (Ctrl + K) */}
       <AnimatePresence>
         {palette && (
           <motion.div
@@ -322,66 +268,61 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: reduce ? 0 : 0.15 }}
-            onClick={() => setPalette(false)}
-            className="fixed inset-0 z-[95] flex items-start justify-center bg-black/70 px-4 pt-[15vh] backdrop-blur-sm"
+            onClick={closePalette}
+            className="fixed inset-0 z-[70] flex items-start justify-center bg-black/70 px-4 pt-[16vh] backdrop-blur-sm"
           >
-            <div
-              role="dialog"
-              aria-label="Command palette"
+            <motion.div
+              initial={{ y: -12, scale: 0.98 }}
+              animate={{ y: 0, scale: 1 }}
+              exit={{ y: -12, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg overflow-hidden rounded border border-cyan-400/60 bg-black/95 font-mono text-sm shadow-[0_0_30px_rgba(0,200,255,0.2)]"
+              className="w-full max-w-lg overflow-hidden rounded-xl border border-green-400/30 bg-black/90 font-mono shadow-[0_0_60px_rgba(0,255,156,0.15)]"
             >
-              <div className="flex items-center gap-2 border-b border-cyan-900 px-4 py-3">
-                <span className="text-cyan-700">&gt;</span>
+              <div className="flex items-center gap-3 border-b border-green-400/20 px-4 py-3">
+                <span className="text-green-400">&gt;</span>
                 <input
-                  ref={inputRef}
+                  autoFocus
                   value={query}
                   onChange={(e) => {
                     setQuery(e.target.value);
-                    setSel(0);
+                    setIndex(0);
                   }}
-                  onKeyDown={onPaletteKey}
-                  placeholder="type a command or section..."
-                  spellCheck={false}
-                  autoComplete="off"
-                  className="flex-1 bg-transparent text-cyan-300 placeholder-cyan-900 caret-cyan-400 outline-none"
+                  onKeyDown={onInputKey}
+                  placeholder="Jump to a section or open a link..."
+                  className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
                 />
-                <kbd className="text-xs text-cyan-800">esc</kbd>
+                <kbd className="rounded border border-slate-600 px-1.5 text-[10px] text-slate-400">
+                  esc
+                </kbd>
               </div>
               <ul className="max-h-72 overflow-y-auto p-2">
-                {filtered.length === 0 && (
-                  <li className="px-3 py-3 text-cyan-800">no matches</li>
+                {results.length === 0 && (
+                  <li className="px-3 py-6 text-center text-xs text-slate-500">No match</li>
                 )}
-                {filtered.map((item, i) => (
-                  <li key={item.label}>
+                {results.map((c, i) => (
+                  <li key={c.label}>
                     <button
-                      onClick={() => runItem(item)}
-                      onMouseEnter={() => setSel(i)}
-                      className={`flex w-full items-center justify-between rounded px-3 py-2 text-left ${
-                        i === sel ? "bg-cyan-400/10 text-cyan-300" : "text-cyan-500"
+                      onClick={() => {
+                        c.run();
+                        closePalette();
+                      }}
+                      onMouseEnter={() => setIndex(i)}
+                      className={`flex w-full items-center justify-between rounded px-3 py-2 text-left text-sm ${
+                        i === index
+                          ? "bg-gradient-to-r from-green-400/15 to-cyan-400/15 text-green-100"
+                          : "text-slate-300"
                       }`}
                     >
-                      <span>./{item.label}</span>
-                      <span className="text-xs text-cyan-800">{item.hint}</span>
+                      <span>{c.label}</span>
+                      <span className="text-xs text-cyan-400/70">{c.hint}</span>
                     </button>
                   </li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* tiny toast */}
-      {toast && (
-        <div
-          role="status"
-          className="fixed bottom-6 left-1/2 z-[96] -translate-x-1/2 rounded border border-cyan-400 bg-black/90 px-4 py-2 font-mono text-xs text-cyan-300"
-        >
-          {toast}
-        </div>
-      )}
     </>
   );
 }
