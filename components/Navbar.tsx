@@ -139,7 +139,7 @@ export default function Navbar() {
               : "border-transparent bg-black/10 backdrop-blur-sm"
           }`}
         >
-          <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3 font-mono text-sm">
+          <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 whitespace-nowrap px-6 py-3 font-mono text-sm">
             {/* logo: terminal prompt */}
             <a href="#top" className="flex items-center gap-1 font-bold">
               <span className="bg-gradient-to-r from-green-300 to-cyan-300 bg-clip-text text-transparent">
@@ -153,7 +153,7 @@ export default function Navbar() {
             <ul className="hidden items-center gap-1 rounded-full border border-green-400/10 bg-white/[0.03] p-1 md:flex">
               {LINKS.map((l, i) => (
                 <li key={l.id}>
-                  <a href={`#${l.id}`} className="group relative block rounded-full px-4 py-1.5">
+                  <a href={`#${l.id}`} className="group relative block rounded-full px-3 py-1.5 xl:px-4">
                     {active === l.id && (
                       <motion.span
                         layoutId="nav-pill"
@@ -180,7 +180,7 @@ export default function Navbar() {
 
             {/* status, search, resume */}
             <div className="flex items-center gap-3">
-              <span className="hidden items-center gap-2 rounded-full border border-green-400/30 bg-green-400/10 px-3 py-1 text-xs text-green-200 xl:flex">
+              <span className="hidden items-center gap-2 rounded-full border border-green-400/30 bg-green-400/10 px-3 py-1 text-xs text-green-200 2xl:flex">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-green-400" />
@@ -190,7 +190,7 @@ export default function Navbar() {
 
               <button
                 onClick={openPalette}
-                className="hidden items-center gap-2 rounded border border-cyan-400/30 bg-cyan-400/5 px-3 py-1.5 text-xs text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 lg:flex"
+                className="hidden items-center gap-2 rounded border border-cyan-400/30 bg-cyan-400/5 px-3 py-1.5 text-xs text-cyan-200 transition hover:border-cyan-300 hover:bg-cyan-400/10 xl:flex"
               >
                 <span>Search</span>
                 <kbd className="rounded border border-cyan-400/30 px-1.5 text-[10px] text-cyan-300">
@@ -202,7 +202,7 @@ export default function Navbar() {
                 href={RESUME_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden rounded bg-gradient-to-r from-green-400 to-cyan-400 px-4 py-1.5 text-xs font-bold text-black shadow-[0_0_18px_rgba(0,255,156,0.4)] transition hover:brightness-110 md:block"
+                className="hidden rounded bg-gradient-to-r from-green-400 to-cyan-400 px-4 py-1.5 text-xs font-bold text-black shadow-[0_0_18px_rgba(0,255,156,0.4)] transition hover:brightness-110 lg:block"
               >
                 ./resume
               </a>
