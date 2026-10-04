@@ -7,6 +7,7 @@ import type { RefObject } from "react";
 import * as THREE from "three";
 import Shatter from "./Shatter";
 import Campus from "./Campus";
+import HackerLock from "./HackerLock";
 import SectionObjects from "./SectionObjects";
 import { EFFECTS } from "@/data/effects";
 
@@ -173,6 +174,7 @@ export default function Scene() {
         {EFFECTS.stars && <Stars radius={80} depth={50} count={3000} factor={4} fade speed={1} />}
         {EFFECTS.shatter && <Shatter sc={sc} />}
         {EFFECTS.particles && <Particles sc={sc} />}
+        {EFFECTS.hackerLock && <HackerLock sc={sc} />}
         {EFFECTS.core && <Core sc={sc} />}
         <Campus />
         {EFFECTS.sectionObjects && <SectionObjects />}
