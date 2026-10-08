@@ -78,3 +78,14 @@ export const SKILLS = SKILL_GROUPS.map((g) => ({
   group: g.group,
   items: g.skills.map((s) => s.name),
 }));
+
+// TODO: fill in period, summary and highlights. Empty fields stay hidden on the site.
+export const EXPERIENCE = [
+  {
+    role: "Red Team Intern",
+    company: "Tkxel",
+    period: "", // for example "Jun 2026 - Aug 2026"
+    summary: "", // one or two sentences about what you did
+    highlights: [] as string[], // bullet points, for example "Tested web apps for OWASP Top 10 issues"
+  },
+];

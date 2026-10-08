@@ -1,4 +1,4 @@
-const ORDER = ["about", "education", "skills", "projects", "contact"];
+const ORDER = ["about", "experience", "education", "skills", "projects", "contact"];
 
 export default function SectionTitle({ label }: { label: string }) {
   const n = String(ORDER.indexOf(label) + 1).padStart(2, "0");

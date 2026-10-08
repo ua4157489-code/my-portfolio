@@ -9,6 +9,7 @@ const RESUME_URL = "/resume.pdf";
 
 const LINKS = [
   { id: "about", label: "about" },
+  { id: "experience", label: "exp" },
   { id: "education", label: "edu" },
   { id: "skills", label: "skills" },
   { id: "projects", label: "projects" },

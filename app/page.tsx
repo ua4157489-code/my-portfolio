@@ -1,3 +1,4 @@
+import Experience from "@/components/Experience";
 import Marquee from "@/components/Marquee";
 import HudFrame from "@/components/HudFrame";
 import Skills from "@/components/Skills";
@@ -54,6 +55,7 @@ export default function Home() {
       <div className="relative z-10">
         <About />
 
+        <Experience />
         <Education />
 
         <Skills />

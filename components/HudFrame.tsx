@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const ITEMS = [
   { id: "top", label: "HERO" },
   { id: "about", label: "ABOUT" },
+  { id: "experience", label: "EXP" },
   { id: "education", label: "EDU" },
   { id: "skills", label: "SKILLS" },
   { id: "projects", label: "PROJECTS" },

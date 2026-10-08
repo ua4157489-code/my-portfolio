@@ -12,7 +12,7 @@ import {
 } from "@/data/content";
 
 const RESUME_URL = "/resume.pdf";
-const SECTIONS = ["top", "about", "education", "skills", "projects", "contact"];
+const SECTIONS = ["top", "about", "experience", "education", "skills", "projects", "contact"];
 const COMMANDS = [
   "help", "whoami", "about", "skills", "projects", "education", "contact",
   "ls", "cd", "clear", "neofetch", "nmap", "github", "resume", "date", "echo", "sudo",
