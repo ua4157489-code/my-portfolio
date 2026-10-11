@@ -55,7 +55,7 @@ export default function SocialLinks({
             rel="noopener noreferrer"
             aria-label={i.label}
             title={i.label}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-green-900 bg-black/60 text-green-400 transition hover:-translate-y-1 hover:border-green-400 hover:bg-green-400 hover:text-black hover:shadow-[0_0_20px_rgba(0,255,156,0.5)]"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-green-900 bg-black/60 text-green-400 transition hover:-translate-y-1 hover:border-green-400 hover:bg-green-400 hover:text-black hover:shadow-[0_0_20px_rgba(34,211,238,0.5)]"
           >
             <svg
               width={size}

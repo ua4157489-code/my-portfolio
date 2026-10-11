@@ -26,13 +26,13 @@ export default function BackToTop() {
       }`}
     >
       <svg viewBox="0 0 48 48" className="absolute inset-0 -rotate-90">
-        <circle cx="24" cy="24" r="20" fill="rgba(0,0,0,0.8)" stroke="rgba(0,255,156,0.2)" strokeWidth="2" />
+        <circle cx="24" cy="24" r="20" fill="rgba(0,0,0,0.8)" stroke="rgba(34,211,238,0.2)" strokeWidth="2" />
         <circle
           cx="24"
           cy="24"
           r="20"
           fill="none"
-          stroke="#00ff9c"
+          stroke="#22d3ee"
           strokeWidth="2"
           strokeDasharray={C}
           strokeDashoffset={C * (1 - p)}

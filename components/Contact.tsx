@@ -10,7 +10,7 @@ import { CONTACT } from "@/data/content";
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const field =
-  "w-full rounded border bg-black/60 px-4 py-3 text-sm text-green-100 placeholder:text-green-800 focus:outline-none focus:shadow-[0_0_20px_rgba(0,255,156,0.15)]";
+  "w-full rounded border bg-black/60 px-4 py-3 text-sm text-green-100 placeholder:text-green-800 focus:outline-none focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -122,7 +122,7 @@ export default function Contact() {
             </div>
             <button
               type="submit"
-              className="w-full rounded bg-gradient-to-r from-green-400 to-cyan-400 px-6 py-3 font-bold text-black shadow-[0_0_20px_rgba(0,255,156,0.4)] transition hover:brightness-110"
+              className="w-full rounded bg-gradient-to-r from-green-400 to-cyan-400 px-6 py-3 font-bold text-black shadow-[0_0_20px_rgba(34,211,238,0.4)] transition hover:brightness-110"
             >
               Send message →
             </button>
@@ -131,7 +131,7 @@ export default function Contact() {
       </Reveal>
 
       {toast && (
-        <div className="fixed bottom-24 left-1/2 z-[80] -translate-x-1/2 rounded border border-green-400/40 bg-black/90 px-4 py-2 text-sm text-green-200 shadow-[0_0_30px_rgba(0,255,156,0.2)]">
+        <div className="fixed bottom-24 left-1/2 z-[80] -translate-x-1/2 rounded border border-green-400/40 bg-black/90 px-4 py-2 text-sm text-green-200 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
           {toast}
         </div>
       )}

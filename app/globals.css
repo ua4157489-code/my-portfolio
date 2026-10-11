@@ -28,7 +28,7 @@ html { scroll-behavior: smooth; }
 
 /* ---------- hacker effects ---------- */
 .glow {
-  text-shadow: 0 0 8px rgba(0, 255, 156, 0.6), 0 0 24px rgba(0, 255, 156, 0.3);
+  text-shadow: 0 0 8px rgba(34,211,238, 0.6), 0 0 24px rgba(34,211,238, 0.3);
 }
 
 .crt {
@@ -63,7 +63,7 @@ html { scroll-behavior: smooth; }
   animation: glitch-a 3.5s infinite steps(1);
 }
 .glitch::after {
-  color: #00c8ff;
+  color: #a78bfa;
   animation: glitch-b 3.5s infinite steps(1);
 }
 
@@ -96,7 +96,7 @@ html { scroll-behavior: smooth; }
 
 /* ---------- layout upgrade ---------- */
 .text-stroke {
-  -webkit-text-stroke: 1px rgba(0, 255, 156, 0.55);
+  -webkit-text-stroke: 1px rgba(34,211,238, 0.55);
 }
 
 .marquee {
@@ -121,7 +121,7 @@ section[id]:not(#top)::before {
   left: 1.5rem;
   right: 1.5rem;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 255, 156, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(34,211,238, 0.45), transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -132,12 +132,12 @@ section[id]:not(#top)::before {
 
 /* ---------- design system v3 ---------- */
 ::selection {
-  background: rgba(0, 255, 156, 0.3);
+  background: rgba(34,211,238, 0.3);
   color: #fff;
 }
 html {
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 255, 156, 0.4) #000;
+  scrollbar-color: rgba(34,211,238, 0.4) #000;
 }
 ::-webkit-scrollbar {
   width: 8px;
@@ -147,14 +147,14 @@ html {
   background: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 255, 156, 0.35);
+  background: rgba(34,211,238, 0.35);
   border-radius: 8px;
 }
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #00c8ff;
+  outline: 2px solid #a78bfa;
   outline-offset: 2px;
 }
 
@@ -166,8 +166,8 @@ body::before {
   z-index: 1;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(0, 255, 156, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 156, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(34,211,238, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238, 0.035) 1px, transparent 1px);
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 85%);
   mask-image: radial-gradient(ellipse at center, #000 35%, transparent 85%);
@@ -183,10 +183,10 @@ body::before {
     linear-gradient(rgba(5, 12, 9, 0.82), rgba(5, 12, 9, 0.82)) padding-box,
     linear-gradient(
         120deg,
-        rgba(0, 255, 156, 0.55),
-        rgba(0, 200, 255, 0.25),
+        rgba(34,211,238, 0.55),
+        rgba(167,139,250, 0.25),
         rgba(168, 85, 247, 0.45),
-        rgba(0, 255, 156, 0.55)
+        rgba(34,211,238, 0.55)
       )
       border-box;
   background-size: 100% 100%, 300% 100%;
@@ -196,7 +196,7 @@ body::before {
 }
 .tile:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 40px rgba(0, 255, 156, 0.15);
+  box-shadow: 0 0 40px rgba(34,211,238, 0.15);
   animation: tileflow 4s linear infinite;
 }
 .tile::after {
@@ -208,7 +208,7 @@ body::before {
   transition: opacity 0.3s;
   background: radial-gradient(
     380px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(0, 255, 156, 0.12),
+    rgba(34,211,238, 0.12),
     transparent 60%
   );
 }
@@ -223,5 +223,123 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .tile:hover {
     animation: none;
+  }
+}
+
+/* ================= Neon Breach v4 theme ================= */
+@theme {
+  --color-black: #04050b;
+  --color-void: #04050b;
+
+  /* the three accents used by the new components */
+  --color-acc-1: #22d3ee; /* electric cyan */
+  --color-acc-2: #a78bfa; /* violet */
+  --color-acc-3: #ff4d9d; /* hot pink: alerts, red team */
+  --color-acc-4: #fbbf24; /* amber: warnings */
+
+  /* the older "green" classes now render as a brighter electric cyan */
+  --color-green-50: #effcff;
+  --color-green-100: #d6f7ff;
+  --color-green-200: #b0efff;
+  --color-green-300: #86e6ff;
+  --color-green-400: #22d3ee;
+  --color-green-500: #1fbfe0;
+  --color-green-600: #38a9cc;
+  --color-green-700: #4a8cab;
+  --color-green-800: #2e5f78;
+  --color-green-900: #1a4a62;
+  --color-green-950: #0a2433;
+
+  /* the older "cyan" classes now render as violet */
+  --color-cyan-50: #f5f3ff;
+  --color-cyan-100: #ede9fe;
+  --color-cyan-200: #ddd6fe;
+  --color-cyan-300: #cfc3ff;
+  --color-cyan-400: #b69cff;
+  --color-cyan-500: #9b7bff;
+  --color-cyan-600: #7f5df0;
+  --color-cyan-700: #6a4bd0;
+  --color-cyan-800: #4a3a9a;
+  --color-cyan-900: #2f2566;
+  --color-cyan-950: #1a1340;
+
+  /* gradients that ended in "emerald" now end in violet */
+  --color-emerald-300: #c4b5fd;
+  --color-emerald-400: #a78bfa;
+  --color-emerald-500: #8b5cf6;
+}
+
+html,
+body {
+  background: #04050b;
+  color: #e6edff;
+}
+
+/* ---------- cards: tilt toward the mouse (Spotlight.tsx sets --rx and --ry) ---------- */
+.tile {
+  transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+}
+.tile:hover {
+  transform: perspective(900px) translateY(-3px) rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg));
+}
+
+/* ---------- ticker skews with scroll speed (FX.tsx sets --vel) ---------- */
+.vel-skew {
+  transform: skewX(calc(var(--vel, 0) * -10deg));
+  transition: transform 0.1s linear;
+}
+
+/* ---------- warp flash when you jump to a section (FX.tsx) ---------- */
+.warp {
+  opacity: 0;
+  background:
+    radial-gradient(circle at center, rgba(34, 211, 238, 0.35), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(167, 139, 250, 0.12) 0 2px, transparent 2px 6px);
+}
+.warp-on {
+  animation: warp 0.7s ease-out;
+}
+@keyframes warp {
+  0% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* ---------- moving gradient line (footer top) ---------- */
+.shine-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #22d3ee,
+    #a78bfa,
+    #ff4d9d,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shine 6s linear infinite;
+}
+@keyframes shine {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .warp-on,
+  .shine-line {
+    animation: none;
+  }
+  .vel-skew {
+    transform: none;
   }
 }

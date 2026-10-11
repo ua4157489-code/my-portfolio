@@ -21,8 +21,8 @@ type Shard = {
 const RINGS = 6; // more rings = more, smaller shards
 const SECT = 24;
 const PAL = [
-  [0, 255, 156],
-  [0, 200, 255],
+  [34,211,238],
+  [167,139,250],
   [255, 45, 111],
 ];
 
@@ -187,8 +187,8 @@ export default function Shatter2D() {
 
       // soft glow behind the object
       const glow = ctx.createRadialGradient(ox, oy, 0, ox, oy, R * 1.4);
-      glow.addColorStop(0, `rgba(0,255,156,${0.1 * (1 - b * 0.7)})`);
-      glow.addColorStop(1, "rgba(0,255,156,0)");
+      glow.addColorStop(0, `rgba(34,211,238,${0.1 * (1 - b * 0.7)})`);
+      glow.addColorStop(1, "rgba(34,211,238,0)");
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, w, h);
 
@@ -198,7 +198,7 @@ export default function Shatter2D() {
           const rr = R * (0.5 + b * (1.8 + i * 0.9));
           ctx.beginPath();
           ctx.arc(ox, oy, rr, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(0,255,156,${0.3 * (1 - b) * (1 - i * 0.4)})`;
+          ctx.strokeStyle = `rgba(34,211,238,${0.3 * (1 - b) * (1 - i * 0.4)})`;
           ctx.lineWidth = 1.5;
           ctx.stroke();
         }

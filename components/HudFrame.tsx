@@ -50,7 +50,7 @@ export default function HudFrame() {
         <div className="relative flex flex-col gap-6 pl-5">
           <span className="absolute bottom-1 left-[5px] top-1 w-px bg-green-900" />
           <span
-            className="absolute left-[5px] top-1 w-px bg-green-400 shadow-[0_0_8px_#00ff9c]"
+            className="absolute left-[5px] top-1 w-px bg-green-400 shadow-[0_0_8px_#22d3ee]"
             style={{ height: `calc(${p * 100}% - 0.5rem)` }}
           />
           {ITEMS.map((i) => (
@@ -63,7 +63,7 @@ export default function HudFrame() {
               <span
                 className={`absolute -left-5 h-[11px] w-[11px] rounded-full border transition ${
                   active === i.id
-                    ? "scale-125 border-green-400 bg-green-400 shadow-[0_0_10px_#00ff9c]"
+                    ? "scale-125 border-green-400 bg-green-400 shadow-[0_0_10px_#22d3ee]"
                     : "border-green-800 bg-black group-hover:border-green-400"
                 }`}
               />

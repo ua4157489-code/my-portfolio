@@ -147,7 +147,7 @@ function ServerRack({ mats, fade }: { mats: Mats; fade: Fade }) {
     root.current.rotation.y = Math.sin(t * 0.5) * 0.6;
     root.current.position.y = Math.sin(t * 0.9) * 0.08;
   });
-  const colors = ["#00ff9c", "#ffb347", "#00c8ff"];
+  const colors = ["#22d3ee", "#ffb347", "#a78bfa"];
 
   return (
     <group ref={root}>
@@ -286,13 +286,13 @@ function Stage({
 export default function SectionObjects() {
   return (
     <>
-      <Stage id="about" x={-0.25} color="#00ff9c">
+      <Stage id="about" x={-0.25} color="#22d3ee">
         {(m, f) => <PhotoBust fade={f} />}
       </Stage>
       <Stage id="skills" x={0.3} color="#a855f7">
         {(m) => <Network mats={m} />}
       </Stage>
-      <Stage id="projects" x={-0.3} color="#00ff9c">
+      <Stage id="projects" x={-0.3} color="#22d3ee">
         {(m, f) => <ServerRack mats={m} fade={f} />}
       </Stage>
       <Stage id="contact" x={0.3} color="#ffb347">

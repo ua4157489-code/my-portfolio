@@ -9,7 +9,7 @@ export default function SectionTitle({ label }: { label: string }) {
       </span>
       <div className="pb-1 md:pb-3">
         <p className="text-[10px] tracking-[0.3em] text-cyan-300 md:text-xs">// SECTION</p>
-        <h2 className="bg-gradient-to-r from-white via-green-200 to-emerald-400 bg-clip-text text-3xl font-extrabold uppercase tracking-wide text-transparent drop-shadow-[0_0_14px_rgba(0,255,156,0.4)] md:text-5xl">
+        <h2 className="bg-gradient-to-r from-white via-green-200 to-emerald-400 bg-clip-text text-3xl font-extrabold uppercase tracking-wide text-transparent drop-shadow-[0_0_14px_rgba(34,211,238,0.4)] md:text-5xl">
           {label}
         </h2>
       </div>

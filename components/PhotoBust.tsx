@@ -143,11 +143,11 @@ void main() {
   if (a < 0.01) discard;
   vec3 photo = texture2D(uPhoto, vUv).rgb;
   float lum = dot(photo, vec3(0.299, 0.587, 0.114));
-  vec3 tint = mix(vec3(0.0, 0.22, 0.12), vec3(0.45, 1.0, 0.8), lum);
-  vec3 col = mix(photo * vec3(0.7, 1.0, 0.85), tint, 0.35);
+  vec3 tint = mix(vec3(0.0, 0.12, 0.22), vec3(0.55, 0.9, 1.0), lum);
+  vec3 col = mix(photo * vec3(0.8, 0.95, 1.0), tint, 0.35);
   float lines = 0.8 + 0.2 * sin(vUv.y * 380.0 - uTime * 5.0);
   float band = exp(-pow((vY - uScan) * 2.5, 2.0));
-  col = col * lines + vec3(0.1, 1.0, 0.7) * band * 0.6;
+  col = col * lines + vec3(0.2, 0.85, 1.0) * band * 0.6;
   float bottom = smoothstep(0.02, 0.38, vUv.y);
   gl_FragColor = vec4(col, a * uOpacity * bottom);
 }
@@ -161,7 +161,7 @@ varying float vMask;
 void main() {
   if (vMask < 0.5) discard;
   float bottom = smoothstep(0.05, 0.4, vUv.y);
-  gl_FragColor = vec4(0.0, 1.0, 0.62, 0.22 * uOpacity * bottom);
+  gl_FragColor = vec4(0.13, 0.83, 0.93, 0.22 * uOpacity * bottom);
 }
 `;
 
@@ -266,7 +266,7 @@ export default function PhotoBust({ fade }: { fade: Fade }) {
         <torusGeometry args={[2.6, 0.012, 6, 120, 4.2]} />
         <meshBasicMaterial
           ref={haloMatA}
-          color="#00c8ff"
+          color="#a78bfa"
           transparent
           opacity={0}
           depthWrite={false}
@@ -277,7 +277,7 @@ export default function PhotoBust({ fade }: { fade: Fade }) {
         <torusGeometry args={[3.0, 0.01, 6, 120, 3.0]} />
         <meshBasicMaterial
           ref={haloMatB}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0}
           depthWrite={false}
@@ -290,7 +290,7 @@ export default function PhotoBust({ fade }: { fade: Fade }) {
         <ringGeometry args={[1.5, 1.56, 64]} />
         <meshBasicMaterial
           ref={baseMat}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0}
           side={THREE.DoubleSide}

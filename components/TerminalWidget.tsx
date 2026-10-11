@@ -204,7 +204,7 @@ export default function TerminalWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Toggle terminal"
-        className="fixed bottom-6 right-6 z-[65] flex h-12 w-12 items-center justify-center rounded-full border border-green-400/50 bg-black/80 font-mono text-green-300 shadow-[0_0_20px_rgba(0,255,156,0.3)] backdrop-blur transition hover:scale-110 hover:bg-green-400 hover:text-black"
+        className="fixed bottom-6 right-6 z-[65] flex h-12 w-12 items-center justify-center rounded-full border border-green-400/50 bg-black/80 font-mono text-green-300 shadow-[0_0_20px_rgba(34,211,238,0.3)] backdrop-blur transition hover:scale-110 hover:bg-green-400 hover:text-black"
       >
         {open ? "×" : ">_"}
       </button>
@@ -212,7 +212,7 @@ export default function TerminalWidget() {
       {open && (
         <div
           onClick={() => inputRef.current?.focus()}
-          className="fixed bottom-24 right-6 z-[65] flex h-[380px] w-[min(92vw,540px)] flex-col overflow-hidden rounded-xl border border-green-400/30 bg-black/90 font-mono text-sm shadow-[0_0_60px_rgba(0,255,156,0.15)] backdrop-blur-md"
+          className="fixed bottom-24 right-6 z-[65] flex h-[380px] w-[min(92vw,540px)] flex-col overflow-hidden rounded-xl border border-green-400/30 bg-black/90 font-mono text-sm shadow-[0_0_60px_rgba(34,211,238,0.15)] backdrop-blur-md"
         >
           <div className="flex items-center gap-2 border-b border-green-400/20 px-4 py-2 text-xs">
             <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />

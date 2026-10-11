@@ -95,13 +95,13 @@ export default function CustomCursor() {
         const scale = pressed ? 0.7 : hovering ? 1.8 : 1;
         ringInner.current.style.transform = `scale(${scale})`;
         ringInner.current.style.backgroundColor = hovering
-          ? "rgba(0, 255, 156, 0.12)"
+          ? "rgba(34,211,238, 0.12)"
           : "transparent";
       }
 
       ctx.clearRect(0, 0, c.width, c.height);
       ctx.font = "14px monospace";
-      ctx.fillStyle = "#00ff9c";
+      ctx.fillStyle = "#22d3ee";
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.life -= 0.02;
@@ -134,7 +134,7 @@ export default function CustomCursor() {
       <div
         ref={glow}
         style={{ opacity: 0 }}
-        className="pointer-events-none fixed left-0 top-0 z-[54] -ml-[150px] -mt-[150px] h-[300px] w-[300px] rounded-full bg-[radial-gradient(circle,rgba(0,255,156,0.12),transparent_60%)] transition-opacity duration-300"
+        className="pointer-events-none fixed left-0 top-0 z-[54] -ml-[150px] -mt-[150px] h-[300px] w-[300px] rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.12),transparent_60%)] transition-opacity duration-300"
       />
       <canvas
         ref={canvas}
@@ -147,13 +147,13 @@ export default function CustomCursor() {
       >
         <div
           ref={ringInner}
-          className="h-full w-full rounded-full border border-green-400 shadow-[0_0_12px_rgba(0,255,156,0.6)] transition duration-200"
+          className="h-full w-full rounded-full border border-green-400 shadow-[0_0_12px_rgba(34,211,238,0.6)] transition duration-200"
         />
       </div>
       <div
         ref={dot}
         style={{ opacity: 0 }}
-        className="pointer-events-none fixed left-0 top-0 z-[110] -ml-[3px] -mt-[3px] h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_#00ff9c] transition-opacity duration-300"
+        className="pointer-events-none fixed left-0 top-0 z-[110] -ml-[3px] -mt-[3px] h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_#22d3ee] transition-opacity duration-300"
       />
     </>
   );

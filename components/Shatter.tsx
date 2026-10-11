@@ -11,7 +11,7 @@ function rand(i: number) {
   return x - Math.floor(x);
 }
 
-const GREEN = new THREE.Color("#00ff9c");
+const GREEN = new THREE.Color("#22d3ee");
 const PINK = new THREE.Color("#ff2d6f");
 
 const _v = new THREE.Vector3();
@@ -101,11 +101,11 @@ export default function Shatter({ sc }: { sc: RefObject<{ s: number }> }) {
   return (
     <group ref={group} position={[3.5, 0, -3]}>
       <mesh geometry={data.geo} frustumCulled={false}>
-        <meshBasicMaterial ref={wire} color="#00ff9c" wireframe transparent opacity={0.45} />
+        <meshBasicMaterial ref={wire} color="#22d3ee" wireframe transparent opacity={0.45} />
       </mesh>
       <mesh geometry={data.geo} frustumCulled={false}>
         <meshBasicMaterial
-          color="#00c8ff"
+          color="#a78bfa"
           transparent
           opacity={0.05}
           side={THREE.DoubleSide}

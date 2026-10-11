@@ -37,7 +37,7 @@ export default function MatrixRain() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.globalCompositeOperation = "source-over";
 
-      ctx.fillStyle = "#00ff9c";
+      ctx.fillStyle = "#22d3ee";
       ctx.font = `${fontSize}px monospace`;
       for (let i = 0; i < columns; i++) {
         const ch = CHARS[Math.floor(Math.random() * CHARS.length)];

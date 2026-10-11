@@ -171,7 +171,7 @@ export default function PhotoCloud({ fade }: { fade: Fade }) {
         <ringGeometry args={[1.5, 1.56, 64]} />
         <meshBasicMaterial
           ref={ringMat}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0}
           side={THREE.DoubleSide}
@@ -183,7 +183,7 @@ export default function PhotoCloud({ fade }: { fade: Fade }) {
         <ringGeometry args={[1.9, 1.92, 64]} />
         <meshBasicMaterial
           ref={ring2Mat}
-          color="#00c8ff"
+          color="#a78bfa"
           transparent
           opacity={0}
           side={THREE.DoubleSide}

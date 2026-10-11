@@ -13,8 +13,8 @@ import { EFFECTS } from "@/data/effects";
 
 type Shared = RefObject<{ s: number; idx: number; vel: number }>;
 
-const GREEN = new THREE.Color("#00ff9c");
-const CYAN = new THREE.Color("#00c8ff");
+const GREEN = new THREE.Color("#22d3ee");
+const CYAN = new THREE.Color("#a78bfa");
 const PURPLE = new THREE.Color("#a855f7");
 
 // where the object sits for each section: top, about, skills, projects, contact
@@ -94,7 +94,7 @@ function Orbiter({ sc }: { sc: Shared }) {
   return (
     <mesh ref={ref}>
       <torusKnotGeometry args={[0.45, 0.13, 120, 14]} />
-      <meshBasicMaterial color="#00c8ff" wireframe transparent opacity={0.5} />
+      <meshBasicMaterial color="#a78bfa" wireframe transparent opacity={0.5} />
     </mesh>
   );
 }
@@ -131,7 +131,7 @@ function Core({ sc }: { sc: Shared }) {
       <Float speed={1.5} rotationIntensity={0.3} floatIntensity={1}>
         <mesh ref={mesh}>
           <icosahedronGeometry args={[1.6, 1]} />
-          <meshBasicMaterial ref={mat} color="#00ff9c" wireframe transparent opacity={0.6} />
+          <meshBasicMaterial ref={mat} color="#22d3ee" wireframe transparent opacity={0.6} />
         </mesh>
       </Float>
       {EFFECTS.orbiter && <Orbiter sc={sc} />}
@@ -159,7 +159,7 @@ function Particles({ sc }: { sc: Shared }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.035} color="#00ff9c" transparent opacity={0.7} sizeAttenuation />
+      <pointsMaterial size={0.035} color="#22d3ee" transparent opacity={0.7} sizeAttenuation />
     </points>
   );
 }

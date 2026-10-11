@@ -15,7 +15,7 @@ export default function Education() {
             id={`edu-${i}`}
             className="relative mb-40 ml-8 last:mb-0"
           >
-            <span className="absolute -left-[38px] top-7 h-3 w-3 rounded-full border border-green-400 bg-black shadow-[0_0_10px_rgba(0,255,156,0.8)]" />
+            <span className="absolute -left-[38px] top-7 h-3 w-3 rounded-full border border-green-400 bg-black shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
             <Reveal delay={i * 0.1}>
               <div className="tile p-6">
                 {e.period && (

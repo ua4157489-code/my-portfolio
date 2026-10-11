@@ -1,35 +1,73 @@
-import type { ReactNode } from "react";
+"use client";
 
-const META: Record<string, { label: string; kicker: string }> = {
-  about: { label: "About", kicker: "who I am" },
-  experience: { label: "Experience", kicker: "where I have worked" },
-  education: { label: "Education", kicker: "where I studied" },
-  skills: { label: "Skills", kicker: "what I can do" },
-  projects: { label: "Projects", kicker: "what I have built" },
-  contact: { label: "Contact", kicker: "let's talk" },
+import { useRef } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+const META: Record<string, { label: string; kicker: string; accent: string }> = {
+  about: { label: "About", kicker: "Who I am and what I focus on", accent: "#22d3ee" },
+  experience: { label: "Experience", kicker: "Where I have worked", accent: "#ff4d9d" },
+  education: { label: "Education", kicker: "Where I studied", accent: "#a78bfa" },
+  skills: { label: "Skills", kicker: "What I can do", accent: "#fbbf24" },
+  projects: { label: "Projects", kicker: "What I have built", accent: "#22d3ee" },
+  contact: { label: "Contact", kicker: "Let's talk", accent: "#a78bfa" },
 };
 const ORDER = Object.keys(META);
 
 export default function SplitSection({ id, children }: { id: string; children: ReactNode }) {
-  const meta = META[id] ?? { label: id, kicker: "" };
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const ghostY = useTransform(scrollYProgress, [0, 1], [90, -90]);
+  const lineScale = useTransform(scrollYProgress, [0.05, 0.4], [0, 1]);
+
+  const meta = META[id] ?? { label: id, kicker: "", accent: "#22d3ee" };
   const n = String(ORDER.indexOf(id) + 1).padStart(2, "0");
 
   return (
     <section
+      ref={ref}
       id={id}
-      className="mx-auto max-w-7xl scroll-mt-20 px-6 py-24 lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-14"
+      style={{ "--accent": meta.accent } as CSSProperties}
+      className="relative overflow-x-clip border-y border-white/5 bg-black/50 backdrop-blur-[2px]"
     >
-      <aside className="mb-10 select-none lg:sticky lg:top-28 lg:mb-0 lg:self-start">
-        <span className="text-stroke block text-7xl font-extrabold leading-none text-transparent lg:text-8xl">
-          {n}
-        </span>
-        <h2 className="mt-3 bg-gradient-to-r from-white via-green-200 to-emerald-400 bg-clip-text text-3xl font-extrabold uppercase tracking-wide text-transparent drop-shadow-[0_0_14px_rgba(0,255,156,0.4)] lg:text-4xl">
-          {meta.label}
-        </h2>
-        <p className="mt-2 text-xs tracking-[0.3em] text-cyan-300">// {meta.kicker}</p>
-        <span className="mt-5 block h-px w-24 bg-gradient-to-r from-green-400 to-transparent" />
-      </aside>
-      <div className="min-w-0">{children}</div>
+      {/* accent glow on the left edge: each section has its own colour */}
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 w-1/3 opacity-25"
+        style={{ background: "radial-gradient(ellipse at left, var(--accent), transparent 70%)" }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-6 py-28 lg:grid lg:min-h-[85vh] lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-14">
+        <aside className="relative mb-10 select-none lg:sticky lg:top-28 lg:mb-0 lg:self-start">
+          <motion.span
+            style={{ y: ghostY, WebkitTextStroke: "1px var(--accent)" }}
+            className="pointer-events-none block text-8xl font-extrabold leading-none text-transparent opacity-45 lg:text-9xl"
+          >
+            {n}
+          </motion.span>
+          <motion.h2
+            initial={{ clipPath: "inset(0 100% 0 0)" }}
+            whileInView={{ clipPath: "inset(0 0% 0 0)" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mt-3 text-4xl font-extrabold tracking-tight text-white lg:text-5xl"
+          >
+            {meta.label}
+          </motion.h2>
+          <p className="mt-2 text-sm text-slate-300">{meta.kicker}</p>
+          <motion.span
+            style={{
+              scaleX: lineScale,
+              background: "linear-gradient(90deg, var(--accent), transparent)",
+            }}
+            className="mt-5 block h-0.5 w-28 origin-left"
+          />
+        </aside>
+
+        <div className="min-w-0">{children}</div>
+      </div>
     </section>
   );
 }

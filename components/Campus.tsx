@@ -8,7 +8,7 @@ import * as THREE from "three";
 type V3 = [number, number, number];
 type Fade = RefObject<{ w: number }>;
 type LineKey = "green" | "cyan" | "amber";
-type Mats = {
+export type Mats = {
   fill: THREE.MeshBasicMaterial;
   green: THREE.LineBasicMaterial;
   cyan: THREE.LineBasicMaterial;
@@ -129,10 +129,10 @@ function Palm({ x, z, h, mats }: { x: number; z: number; h: number; mats: Mats }
 /* ---------- Rukhsana Foundation (3-storey house, wooden gate, palms) ---------- */
 
 const RUKHSANA_SIGN: SignLine[] = [
-  { text: "RUKHSANA FOUNDATION", size: 80, y: 64, color: "#00ff9c" },
+  { text: "RUKHSANA FOUNDATION", size: 80, y: 64, color: "#22d3ee" },
 ];
 
-function RukhsanaModel({ mats, fade }: { mats: Mats; fade: Fade }) {
+export function RukhsanaModel({ mats, fade }: { mats: Mats; fade: Fade }) {
   return (
     <>
       {/* ground floor, first floor, second floor */}
@@ -192,11 +192,11 @@ function RukhsanaModel({ mats, fade }: { mats: Mats; fade: Fade }) {
 /* ---------- Al Nafi International College (white building, blue tent, sign wall) ---------- */
 
 const ALNAFI_SIGN: SignLine[] = [
-  { text: "al-nafi", size: 100, y: 90, color: "#00c8ff" },
-  { text: "INTERNATIONAL COLLEGE", size: 56, y: 205, color: "#00ff9c" },
+  { text: "al-nafi", size: 100, y: 90, color: "#a78bfa" },
+  { text: "INTERNATIONAL COLLEGE", size: 56, y: 205, color: "#22d3ee" },
 ];
 
-function AlNafiModel({ mats, fade }: { mats: Mats; fade: Fade }) {
+export function AlNafiModel({ mats, fade }: { mats: Mats; fade: Fade }) {
   return (
     <>
       {/* main white building, two storeys, flat roofs */}
@@ -272,14 +272,14 @@ function Building({
   const mats = useMemo<Mats>(
     () => ({
       fill: new THREE.MeshBasicMaterial({
-        color: "#003322",
+        color: "#07122b",
         transparent: true,
         opacity: 0,
         depthWrite: false,
         side: THREE.DoubleSide,
       }),
-      green: new THREE.LineBasicMaterial({ color: "#00ff9c", transparent: true, opacity: 0 }),
-      cyan: new THREE.LineBasicMaterial({ color: "#00c8ff", transparent: true, opacity: 0 }),
+      green: new THREE.LineBasicMaterial({ color: "#22d3ee", transparent: true, opacity: 0 }),
+      cyan: new THREE.LineBasicMaterial({ color: "#a78bfa", transparent: true, opacity: 0 }),
       amber: new THREE.LineBasicMaterial({ color: "#ffb347", transparent: true, opacity: 0 }),
     }),
     []
@@ -327,7 +327,7 @@ function Building({
         <planeGeometry args={[7, 5]} />
         <meshBasicMaterial
           ref={scanMat}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0}
           side={THREE.DoubleSide}

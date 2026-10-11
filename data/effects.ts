@@ -1,6 +1,7 @@
 // Turn background effects on or off. true = on, false = off.
 export const EFFECTS = {
   hackerLock: true, // hacker padlock that cracks apart as you scroll
+  sectionObjects: false, // old per-section objects, replaced by the 3D world
   core: false, // main glowing wireframe shape that travels as you scroll
   orbiter: false, // small torus knot circling the main shape
   shatter2d: false, // 2D object that breaks into shards on scroll

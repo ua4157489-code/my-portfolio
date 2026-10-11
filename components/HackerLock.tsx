@@ -7,7 +7,7 @@ import * as THREE from "three";
 
 type Shared = RefObject<{ s: number }>;
 
-const GREEN = new THREE.Color("#00ff9c");
+const GREEN = new THREE.Color("#22d3ee");
 const RED = new THREE.Color("#ff2d6f");
 const IMPACT = new THREE.Vector3(0, -0.35, 0.5); // the keyhole: the crack starts here
 
@@ -189,12 +189,12 @@ export default function HackerLock({ sc }: { sc: Shared }) {
   return (
     <group ref={group}>
       <mesh geometry={lock.geo} frustumCulled={false}>
-        <meshBasicMaterial ref={wire} color="#00ff9c" wireframe transparent opacity={0.55} />
+        <meshBasicMaterial ref={wire} color="#22d3ee" wireframe transparent opacity={0.55} />
       </mesh>
       <mesh geometry={lock.geo} frustumCulled={false}>
         <meshBasicMaterial
           ref={fill}
-          color="#00c8ff"
+          color="#a78bfa"
           transparent
           opacity={0.06}
           side={THREE.DoubleSide}
@@ -206,7 +206,7 @@ export default function HackerLock({ sc }: { sc: Shared }) {
         <torusGeometry args={[2.5, 0.014, 6, 100, 4.4]} />
         <meshBasicMaterial
           ref={ringMatA}
-          color="#00c8ff"
+          color="#a78bfa"
           transparent
           opacity={0.6}
           depthWrite={false}
@@ -217,7 +217,7 @@ export default function HackerLock({ sc }: { sc: Shared }) {
         <torusGeometry args={[2.85, 0.01, 6, 100, 3.2]} />
         <meshBasicMaterial
           ref={ringMatB}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0.4}
           depthWrite={false}
@@ -229,7 +229,7 @@ export default function HackerLock({ sc }: { sc: Shared }) {
         <planeGeometry args={[3.4, 0.03]} />
         <meshBasicMaterial
           ref={scanMat}
-          color="#00ff9c"
+          color="#22d3ee"
           transparent
           opacity={0.5}
           side={THREE.DoubleSide}

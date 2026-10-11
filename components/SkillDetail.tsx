@@ -24,7 +24,7 @@ export default function SkillDetail({
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 24 }}
-      className="fixed inset-x-0 bottom-24 z-[64] mx-auto w-[min(94vw,560px)] rounded-xl border border-green-400/40 bg-black/90 p-5 font-mono shadow-[0_0_50px_rgba(0,255,156,0.2)] backdrop-blur-md"
+      className="fixed inset-x-0 bottom-24 z-[64] mx-auto w-[min(94vw,560px)] rounded-xl border border-green-400/40 bg-black/90 p-5 font-mono shadow-[0_0_50px_rgba(34,211,238,0.2)] backdrop-blur-md"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
