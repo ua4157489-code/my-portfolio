@@ -1,6 +1,8 @@
-import SectionTitle from "@/components/SectionTitle";
 import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
+import SplitSection from "@/components/SplitSection";
 import { ABOUT, CORE_AREAS } from "@/data/content";
+import { FLAT, SKILL_GROUPS, SOURCES } from "@/data/skills";
 
 const KEYWORDS = ["Offensive Security", "Red Teaming", "Vulnerability Assessment"];
 const LABELS = ["experience", "currently", "interests", "goals"];
@@ -15,6 +17,15 @@ const TOOLS = [
   "Wireshark",
   "Metasploit",
   "Wazuh",
+];
+
+const STATS = [
+  { label: "skills", value: FLAT.length },
+  { label: "categories", value: SKILL_GROUPS.length },
+  {
+    label: "used at Tkxel",
+    value: FLAT.filter((s) => s.sources.includes(SOURCES[0].id)).length,
+  },
 ];
 
 function Highlight({ text }: { text: string }) {
@@ -38,43 +49,42 @@ export default function About() {
   const [lead, ...rest] = ABOUT;
 
   return (
-    <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-6 py-28">
-      <Reveal>
-        <div className="flex items-end justify-between gap-6">
-          <SectionTitle label="about" />
-          <p className="hidden text-xs tracking-widest text-green-700 sm:block">
-            // profile.md
-          </p>
-        </div>
-      </Reveal>
-
-      <div className="grid gap-12 lg:grid-cols-12">
-        <div className="space-y-12 lg:col-span-7">
-          {/* big intro */}
-          <Reveal>
+    <SplitSection id="about">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
+        <Reveal className="md:col-span-4">
+          <div className="tile h-full p-6 md:p-8">
+            <p className="mb-3 text-xs tracking-[0.3em] text-cyan-300">// profile.md</p>
             <p className="text-xl leading-relaxed text-green-100 md:text-2xl">
               <Highlight text={lead} />
             </p>
-          </Reveal>
+          </div>
+        </Reveal>
 
-          {/* timeline of the rest */}
-          <Reveal delay={0.05}>
-            <ol className="space-y-7 border-l border-green-900 pl-7">
-              {rest.map((p, i) => (
-                <li key={p} className="relative">
-                  <span className="absolute -left-[33px] top-1.5 h-2 w-2 rounded-full bg-green-400 shadow-[0_0_10px_#00ff9c]" />
-                  <p className="mb-1 text-xs tracking-widest text-cyan-300">
-                    // {LABELS[i]}
-                  </p>
-                  <p className="leading-relaxed text-green-200/90">{p}</p>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
+        <Reveal delay={0.05} className="md:col-span-2">
+          <div className="tile flex h-full flex-col justify-center gap-4 p-6">
+            {STATS.map((st) => (
+              <div key={st.label}>
+                <CountUp to={st.value} className="text-3xl font-bold text-green-300" />
+                <p className="text-[10px] tracking-widest text-cyan-300/80">
+                  {st.label.toUpperCase()}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Reveal>
 
-          {/* tools */}
-          <Reveal delay={0.1}>
-            <p className="mb-3 text-xs tracking-widest text-cyan-300">$ which tools</p>
+        {rest.map((p, i) => (
+          <Reveal key={p} delay={0.05 * i} className="md:col-span-3">
+            <div className="tile h-full p-6">
+              <p className="mb-2 text-xs tracking-[0.3em] text-pink-300">// {LABELS[i]}</p>
+              <p className="leading-relaxed text-green-200/90">{p}</p>
+            </div>
+          </Reveal>
+        ))}
+
+        <Reveal className="md:col-span-6">
+          <div className="tile p-6">
+            <p className="mb-3 text-xs tracking-[0.3em] text-cyan-300">$ which tools</p>
             <ul className="flex flex-wrap gap-2">
               {TOOLS.map((t) => (
                 <li
@@ -85,30 +95,26 @@ export default function About() {
                 </li>
               ))}
             </ul>
-          </Reveal>
+          </div>
+        </Reveal>
 
-          {/* core areas */}
-          <Reveal delay={0.1}>
-            <p className="mb-3 text-xs tracking-widest text-cyan-300">
-              $ ls core_areas/
-            </p>
-            <ul className="grid gap-3 sm:grid-cols-2">
+        <Reveal className="md:col-span-6">
+          <div className="tile p-6">
+            <p className="mb-4 text-xs tracking-[0.3em] text-cyan-300">$ ls core_areas/</p>
+            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {CORE_AREAS.map((a) => (
                 <li
                   key={a.label}
-                  className="flex items-center gap-3 rounded border border-green-900 bg-black/60 px-4 py-3 text-sm text-green-300 transition hover:border-green-400 hover:shadow-[0_0_20px_rgba(0,255,156,0.15)]"
+                  className="flex items-center gap-3 rounded-lg border border-green-900/60 bg-black/40 px-3 py-3 text-sm text-green-300"
                 >
                   <span className="text-lg">{a.icon}</span>
                   {a.label}
                 </li>
               ))}
             </ul>
-          </Reveal>
-        </div>
-
-        {/* right column stays empty: the 3D portrait lives here, in the background */}
-        <div className="hidden lg:col-span-5 lg:block" aria-hidden />
+          </div>
+        </Reveal>
       </div>
-    </section>
+    </SplitSection>
   );
 }

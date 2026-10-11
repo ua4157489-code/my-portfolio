@@ -8,7 +8,7 @@ import * as THREE from "three";
 type Fade = RefObject<{ w: number }>;
 
 const SRC = "/umar.jpg";
-const WIDTH = 3.9; // portrait width in 3D units
+const WIDTH = 2.7; // portrait width in 3D units
 const DEPTH = 1.1; // how far the face pops out
 const CUTOFF = 0.12; // lower keeps more of the photo, higher removes more background
 const MAP = 256; // depth-map resolution

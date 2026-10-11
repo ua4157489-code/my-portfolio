@@ -1,5 +1,6 @@
 "use client";
 
+import SplitSection from "@/components/SplitSection";
 import SectionTitle from "@/components/SectionTitle";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -93,8 +94,8 @@ export default function Projects() {
   );
 
   return (
-    <section id="projects" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-      <SectionTitle label="projects" />
+    <SplitSection id="projects">
+      
 
       <div className="mb-8 space-y-4">
         <div className="flex flex-wrap items-center gap-4">
@@ -141,7 +142,7 @@ export default function Projects() {
               href={p.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block rounded border border-green-900 bg-black/60 p-6 transition hover:border-green-400 hover:shadow-[0_0_25px_rgba(0,255,156,0.2)]"
+              className="tile group block p-6"
             >
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-xl font-bold text-green-300 group-hover:text-green-400">
@@ -171,6 +172,6 @@ export default function Projects() {
       {shown.length === 0 && (
         <p className="py-10 text-center text-sm text-green-700">No projects match.</p>
       )}
-    </section>
+    </SplitSection>
   );
 }

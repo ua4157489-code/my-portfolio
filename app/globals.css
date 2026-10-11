@@ -129,3 +129,99 @@ section[id]:not(#top)::before {
     animation: none;
   }
 }
+
+/* ---------- design system v3 ---------- */
+::selection {
+  background: rgba(0, 255, 156, 0.3);
+  color: #fff;
+}
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 156, 0.4) #000;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #000;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 156, 0.35);
+  border-radius: 8px;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #00c8ff;
+  outline-offset: 2px;
+}
+
+/* faint cyber grid over the whole background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 255, 156, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 156, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 35%, transparent 85%);
+  mask-image: radial-gradient(ellipse at center, #000 35%, transparent 85%);
+}
+
+/* glowing card: gradient border, glass fill, mouse spotlight */
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(5, 12, 9, 0.82), rgba(5, 12, 9, 0.82)) padding-box,
+    linear-gradient(
+        120deg,
+        rgba(0, 255, 156, 0.55),
+        rgba(0, 200, 255, 0.25),
+        rgba(168, 85, 247, 0.45),
+        rgba(0, 255, 156, 0.55)
+      )
+      border-box;
+  background-size: 100% 100%, 300% 100%;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 40px rgba(0, 255, 156, 0.15);
+  animation: tileflow 4s linear infinite;
+}
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    380px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(0, 255, 156, 0.12),
+    transparent 60%
+  );
+}
+.tile:hover::after {
+  opacity: 1;
+}
+@keyframes tileflow {
+  to {
+    background-position: 0 0, 300% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tile:hover {
+    animation: none;
+  }
+}

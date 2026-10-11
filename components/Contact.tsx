@@ -1,4 +1,5 @@
 "use client";
+import SplitSection from "@/components/SplitSection";
 import SectionTitle from "@/components/SectionTitle";
 import SocialLinks from "@/components/SocialLinks";
 
@@ -59,9 +60,9 @@ export default function Contact() {
     errors[k] ? "border-red-500/70" : "border-green-900 focus:border-green-400";
 
   return (
-    <section id="contact" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
+    <SplitSection id="contact">
       <Reveal>
-        <SectionTitle label="contact" />
+        
 
         <div className="grid gap-10 md:grid-cols-2">
           <div>
@@ -134,6 +135,6 @@ export default function Contact() {
           {toast}
         </div>
       )}
-    </section>
+    </SplitSection>
   );
 }

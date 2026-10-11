@@ -1,5 +1,6 @@
 "use client";
 
+import SplitSection from "@/components/SplitSection";
 import SectionTitle from "@/components/SectionTitle";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -57,14 +58,14 @@ export default function Skills() {
   ];
 
   return (
-    <section id="skills" className="mx-auto max-w-5xl scroll-mt-20 px-6 py-24">
-      <SectionTitle label="skills" />
+    <SplitSection id="skills">
+      
 
       <div className="mb-8 grid grid-cols-3 gap-3">
         {stats.map((st) => (
           <div
             key={st.label}
-            className="rounded-xl border border-green-900 bg-black/60 p-4 text-center"
+            className="tile p-4 text-center"
           >
             <CountUp to={st.value} className="text-3xl font-bold text-green-300" />
             <p className="mt-1 text-xs text-cyan-300/80">{st.label}</p>
@@ -124,7 +125,7 @@ export default function Skills() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="rounded-xl border border-green-900 bg-black/60 p-5 backdrop-blur-sm"
+              className="tile p-5"
             >
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="flex items-center gap-2 font-bold text-green-300">
@@ -185,6 +186,6 @@ export default function Skills() {
           />
         )}
       </AnimatePresence>
-    </section>
+    </SplitSection>
   );
 }

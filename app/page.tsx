@@ -1,3 +1,4 @@
+import Spotlight from "@/components/Spotlight";
 import Experience from "@/components/Experience";
 import Marquee from "@/components/Marquee";
 import HudFrame from "@/components/HudFrame";
@@ -44,6 +45,7 @@ export default function Home() {
       {EFFECTS.shatter2d && <Shatter2D />}
       {EFFECTS.matrixRain && <MatrixRain />}
       <Navbar />
+      <Spotlight />
       <HudFrame />
       <BackToTop />
       <TerminalWidget />

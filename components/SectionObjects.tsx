@@ -286,7 +286,7 @@ function Stage({
 export default function SectionObjects() {
   return (
     <>
-      <Stage id="about" x={0.17} color="#00ff9c">
+      <Stage id="about" x={-0.25} color="#00ff9c">
         {(m, f) => <PhotoBust fade={f} />}
       </Stage>
       <Stage id="skills" x={0.3} color="#a855f7">

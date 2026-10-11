@@ -46,7 +46,7 @@ export default function HudFrame() {
   return (
     <div className="pointer-events-none fixed inset-0 z-[52] font-mono">
       {/* left section rail (wide screens only) */}
-      <div className="absolute left-5 top-1/2 hidden -translate-y-1/2 xl:block">
+      <div className="absolute left-5 top-1/2 hidden -translate-y-1/2 2xl:block">
         <div className="relative flex flex-col gap-6 pl-5">
           <span className="absolute bottom-1 left-[5px] top-1 w-px bg-green-900" />
           <span
