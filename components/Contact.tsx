@@ -1,16 +1,15 @@
 "use client";
-import SplitSection from "@/components/SplitSection";
-import SectionTitle from "@/components/SectionTitle";
-import SocialLinks from "@/components/SocialLinks";
 
 import { useState } from "react";
+import SplitSection from "@/components/SplitSection";
+import SocialLinks from "@/components/SocialLinks";
 import Reveal from "@/components/Reveal";
 import { CONTACT } from "@/data/content";
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const field =
-  "w-full rounded border bg-black/60 px-4 py-3 text-sm text-green-100 placeholder:text-green-800 focus:outline-none focus:shadow-[0_0_20px_rgba(34,211,238,0.15)]";
+  "w-full border-0 border-b-2 bg-transparent px-0 py-3 text-lg text-white placeholder:text-slate-400 transition-colors focus:outline-none";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -24,9 +23,9 @@ export default function Contact() {
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (form.name.trim().length < 2) e.name = "Please enter your name";
+    if (form.name.trim().length < 2) e.name = "Enter your name";
     if (!emailRe.test(form.email.trim())) e.email = "Enter a valid email address";
-    if (form.message.trim().length < 10) e.message = "Message should be at least 10 characters";
+    if (form.message.trim().length < 10) e.message = "Write at least 10 characters";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -57,81 +56,91 @@ export default function Contact() {
   };
 
   const border = (k: string) =>
-    errors[k] ? "border-red-500/70" : "border-green-900 focus:border-green-400";
+    errors[k] ? "border-red-500" : "border-white/20 focus:border-[var(--accent)]";
 
   return (
     <SplitSection id="contact">
       <Reveal>
-        
+        <h3 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white md:text-7xl">
+          Got something to <span className="text-[var(--accent)]">break</span>, or protect?
+        </h3>
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-200">
+          Security testing, red teaming or a project you want to build together: send a message
+          and I will reply.
+        </p>
+      </Reveal>
 
-        <div className="grid gap-10 md:grid-cols-2">
-          <div>
-            <p className="mb-6 text-lg leading-relaxed text-green-100">
-              Want to talk security, red teaming, or work together? Send a message, or reach me
-              directly.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={copyEmail}
-                className="rounded border border-green-400 px-5 py-2 text-sm text-green-300 transition hover:bg-green-400 hover:text-black"
-              >
-                Copy email
-              </button>
-            </div>
-            <SocialLinks className="mt-6" />
-            {!CONTACT.email && (
-              <p className="mt-6 rounded border border-yellow-500/40 bg-yellow-500/5 p-3 text-xs text-yellow-300">
-                Your email is not set yet. Add it as <code>CONTACT.email</code> in{" "}
-                <code>data/content.ts</code> to enable sending and copying.
-              </p>
-            )}
-          </div>
+      <Reveal delay={0.1}>
+        <button
+          onClick={copyEmail}
+          className="group mt-10 block text-left"
+          aria-label="Copy email address"
+        >
+          <span className="block break-all text-2xl font-bold text-white transition group-hover:text-[var(--accent)] md:text-4xl">
+            {CONTACT.email || "add-your-email@here"}
+          </span>
+          <span className="mt-1 block h-0.5 w-0 bg-[var(--accent)] transition-all duration-500 group-hover:w-full" />
+          <span className="mt-2 block text-sm text-slate-300">Click to copy</span>
+        </button>
+        <SocialLinks className="mt-6" />
+        {!CONTACT.email && (
+          <p className="mt-6 rounded border border-yellow-500/40 bg-yellow-500/5 p-3 text-xs text-yellow-300">
+            Your email is not set yet. Add it as <code>CONTACT.email</code> in{" "}
+            <code>data/content.ts</code> to enable sending and copying.
+          </p>
+        )}
+      </Reveal>
 
-          <form onSubmit={submit} noValidate className="space-y-4">
+      <Reveal delay={0.15}>
+        <form onSubmit={submit} noValidate className="mt-14 space-y-8">
+          <div className="grid gap-8 md:grid-cols-2">
             <div>
               <input
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Your name"
+                aria-label="Your name"
                 className={`${field} ${border("name")}`}
               />
-              {errors.name && <p className="mt-1 text-xs text-red-400">{errors.name}</p>}
+              {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name}</p>}
             </div>
             <div>
               <input
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Your email"
+                aria-label="Your email"
                 className={`${field} ${border("email")}`}
               />
-              {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email}</p>}
+              {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
             </div>
-            <div>
-              <textarea
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                placeholder="Your message"
-                rows={5}
-                maxLength={500}
-                className={`${field} ${border("message")} resize-none`}
-              />
-              <div className="mt-1 flex justify-between text-xs">
-                <span className="text-red-400">{errors.message}</span>
-                <span className="text-green-700">{form.message.length}/500</span>
-              </div>
+          </div>
+          <div>
+            <textarea
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              placeholder="What would you like to talk about?"
+              aria-label="Your message"
+              rows={4}
+              maxLength={500}
+              className={`${field} ${border("message")} resize-none`}
+            />
+            <div className="mt-1 flex justify-between text-sm">
+              <span className="text-red-400">{errors.message}</span>
+              <span className="text-slate-300">{form.message.length}/500</span>
             </div>
-            <button
-              type="submit"
-              className="w-full rounded bg-gradient-to-r from-green-400 to-cyan-400 px-6 py-3 font-bold text-black shadow-[0_0_20px_rgba(34,211,238,0.4)] transition hover:brightness-110"
-            >
-              Send message →
-            </button>
-          </form>
-        </div>
+          </div>
+          <button
+            type="submit"
+            className="rounded-full bg-gradient-to-r from-cyan-300 via-violet-400 to-pink-400 px-10 py-4 text-lg font-bold text-black shadow-[0_0_30px_rgba(167,139,250,0.35)] transition hover:scale-[1.03] hover:brightness-110"
+          >
+            Send message
+          </button>
+        </form>
       </Reveal>
 
       {toast && (
-        <div className="fixed bottom-24 left-1/2 z-[80] -translate-x-1/2 rounded border border-green-400/40 bg-black/90 px-4 py-2 text-sm text-green-200 shadow-[0_0_30px_rgba(34,211,238,0.2)]">
+        <div className="fixed bottom-24 left-1/2 z-[80] -translate-x-1/2 rounded border border-cyan-300/40 bg-black/90 px-4 py-2 text-sm text-white shadow-[0_0_30px_rgba(34,211,238,0.2)]">
           {toast}
         </div>
       )}
