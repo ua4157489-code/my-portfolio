@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAME, CONTACT } from "@/data/content";
-import Magnetic from "@/components/Magnetic";
 import SocialLinks from "@/components/SocialLinks";
 
 const RESUME_URL = "/resume.pdf";
@@ -161,15 +160,6 @@ export default function Navbar() {
             >
               Resume
             </a>
-
-            <Magnetic>
-              <a
-                href="#contact"
-                className="hidden rounded-lg bg-gradient-to-r from-acc-1 to-acc-2 px-4 py-2 text-xs font-extrabold text-black shadow-[0_0_24px_rgba(34,211,238,0.45)] transition hover:brightness-110 sm:block"
-              >
-                Hire me
-              </a>
-            </Magnetic>
 
             <button
               onClick={() => setMenu(!menu)}

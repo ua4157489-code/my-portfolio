@@ -26,13 +26,6 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-full bg-gradient-to-r from-black/80 via-black/40 to-transparent md:w-3/5" />
 
       <div className="max-w-4xl">
-        <p className="mb-6 inline-flex items-center gap-3 rounded-full border border-acc-1/30 bg-acc-1/10 px-4 py-1.5 text-sm text-acc-1">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-acc-1 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-acc-1" />
-          </span>
-          Open to work
-        </p>
 
         <h1
           className="glitch bg-gradient-to-r from-white via-acc-1 to-acc-2 bg-clip-text text-[clamp(3.5rem,10vw,9rem)] font-extrabold leading-[0.95] tracking-tight text-transparent drop-shadow-[0_0_28px_rgba(34,211,238,0.35)]"

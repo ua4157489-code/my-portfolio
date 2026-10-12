@@ -105,6 +105,16 @@ export const SKILL_GROUPS: SkillGroup[] = [
       s("Mathematics", LUMS),
     ],
   },
+  {
+    group: "Frameworks & Labs",
+    icon: "📋",
+    skills: [s("SOC Operations"), s("ISO 27001"), s("NIST"), s("MITRE ATT&CK"), s("TryHackMe"), s("Hack The Box")],
+  },
+  {
+    group: "Cloud, Automation & Networking",
+    icon: "⚙️",
+    skills: [s("AWS (EC2, S3, IAM)"), s("Ansible"), s("Kubernetes (basics)"), s("TCP/IP"), s("DNS"), s("DHCP"), s("VPN basics")],
+  },
 ];
 
 export const FLAT: FlatSkill[] = SKILL_GROUPS.flatMap((g) =>

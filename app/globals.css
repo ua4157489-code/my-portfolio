@@ -343,3 +343,10 @@ body {
     transform: none;
   }
 }
+
+/* scroll-lit words: show everything if the visitor prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .sw-word {
+    opacity: 1 !important;
+  }
+}

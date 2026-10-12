@@ -94,10 +94,6 @@ export default function Footer() {
             Offensive security, red teaming and vulnerability assessment. Learning in the lab,
             applying it in the field.
           </p>
-          <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-acc-1/30 bg-acc-1/10 px-3 py-1 text-xs text-acc-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-acc-1" />
-            Open to work
-          </p>
         </div>
 
         <div>
