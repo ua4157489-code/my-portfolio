@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import SettingsPanel from "@/components/SettingsPanel";
 import BootScreen from "@/components/BootScreen";
 import CustomCursor from "@/components/CustomCursor";
@@ -9,17 +10,12 @@ import CommandPalette from "@/components/CommandPalette";
 import ScrollBar from "@/components/ScrollBar";
 import BackToTop from "@/components/BackToTop";
 import TerminalWidget from "@/components/TerminalWidget";
-import Hero from "@/components/Hero";
-import Marquee from "@/components/Marquee";
-import About from "@/components/About";
-import Experience from "@/components/Experience";
-import Education from "@/components/Education";
-import Skills from "@/components/Skills";
-import Projects from "@/components/Projects";
-import Contact from "@/components/Contact";
+import HashLinks from "@/components/HashLinks";
 import Footer from "@/components/Footer";
 
-export default function Home() {
+// Everything here stays mounted while visitors move between pages,
+// so the 3D world and navbar never reload.
+export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <main className="relative font-mono text-slate-200">
       <BootScreen />
@@ -27,8 +23,6 @@ export default function Home() {
       <CustomCursor />
       <Spotlight />
       <FX />
-
-      {/* fixed 3D world behind everything: the camera flies forward as you scroll */}
       <World />
 
       <Navbar />
@@ -37,15 +31,9 @@ export default function Home() {
       <ScrollBar />
       <BackToTop />
       <TerminalWidget />
+      <HashLinks />
 
-      <Hero />
-      <Marquee />
-      <About />
-      <Experience />
-      <Education />
-      <Skills />
-      <Projects />
-      <Contact />
+      {children}
       <Footer />
     </main>
   );

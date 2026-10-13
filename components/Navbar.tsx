@@ -1,28 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { NAME, CONTACT } from "@/data/content";
+import { PAGES } from "@/data/pages";
 import SocialLinks from "@/components/SocialLinks";
 
 const RESUME_URL = "/resume.pdf";
 
-const LINKS = [
-  { id: "about", label: "About" },
-  { id: "experience", label: "Experience" },
-  { id: "education", label: "Education" },
-  { id: "skills", label: "Skills" },
-  { id: "projects", label: "Projects" },
-  { id: "contact", label: "Contact" },
-];
-
 export default function Navbar() {
-  const [active, setActive] = useState("");
+  const pathname = usePathname();
+  const active = pathname.split("/")[1] ?? "";
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [p, setP] = useState(0);
 
-  // scroll progress and solid background
+  // scroll progress of the current page and solid background
   useEffect(() => {
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -30,26 +25,13 @@ export default function Navbar() {
       setScrolled(window.scrollY > 30);
     };
     onScroll();
+    const t = setTimeout(onScroll, 300);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // highlight the section on screen
-  useEffect(() => {
-    const ids = ["top", ...LINKS.map((l) => l.id)];
-    const els = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-    const obs = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id === "top" ? "" : e.target.id);
-        }),
-      { rootMargin: "-40% 0px -55% 0px" }
-    );
-    els.forEach((el) => obs.observe(el));
-    return () => obs.disconnect();
-  }, []);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [pathname]);
 
   // lock page scroll while the mobile menu is open
   useEffect(() => {
@@ -74,8 +56,8 @@ export default function Navbar() {
               : "border-white/10 bg-black/35 backdrop-blur-md"
           }`}
         >
-          {/* logo */}
-          <a href="#top" className="group flex items-center gap-3">
+          {/* logo: back to home */}
+          <Link href="/" onClick={() => setMenu(false)} className="group flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-acc-1/40 bg-acc-1/10 text-acc-1 shadow-[0_0_18px_rgba(34,211,238,0.35)] transition group-hover:scale-110">
               <svg
                 viewBox="0 0 24 24"
@@ -93,19 +75,18 @@ export default function Navbar() {
               </svg>
             </span>
             <span className="leading-tight">
-              <span className="block text-sm font-extrabold tracking-wide text-white">
-                {NAME}
-              </span>
+              <span className="block text-sm font-extrabold tracking-wide text-white">{NAME}</span>
               <span className="block text-[11px] text-acc-1">Cyber security</span>
             </span>
-          </a>
+          </Link>
 
-          {/* links */}
+          {/* page links */}
           <ul className="hidden items-center gap-1 lg:flex">
-            {LINKS.map((l) => (
+            {PAGES.map((l) => (
               <li key={l.id}>
-                <a
-                  href={`#${l.id}`}
+                <Link
+                  href={`/${l.id}`}
+                  aria-current={active === l.id ? "page" : undefined}
                   className="relative block rounded-lg px-3.5 py-2 text-[13px] font-medium"
                 >
                   {active === l.id && (
@@ -122,7 +103,7 @@ export default function Navbar() {
                   >
                     {l.label}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -147,9 +128,7 @@ export default function Navbar() {
                 <path d="M20 20l-3.5-3.5" />
               </svg>
               Search
-              <kbd className="rounded border border-white/15 px-1.5 text-[10px] text-slate-400">
-                Ctrl K
-              </kbd>
+              <kbd className="rounded border border-white/15 px-1.5 text-[10px] text-slate-400">Ctrl K</kbd>
             </button>
 
             <a
@@ -171,7 +150,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* scroll progress */}
+          {/* scroll progress of this page */}
           <span className="pointer-events-none absolute inset-x-5 bottom-0 h-px bg-white/10">
             <span
               className="block h-full origin-left bg-gradient-to-r from-acc-1 via-acc-2 to-acc-3"
@@ -192,25 +171,23 @@ export default function Navbar() {
             className="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-black/95 px-8 pb-10 pt-28 backdrop-blur-xl lg:hidden"
           >
             <ul className="space-y-1">
-              {LINKS.map((l, i) => (
+              {PAGES.map((l, i) => (
                 <motion.li
                   key={l.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.05 * i }}
                 >
-                  <a
-                    href={`#${l.id}`}
+                  <Link
+                    href={`/${l.id}`}
                     onClick={() => setMenu(false)}
                     className={`flex items-baseline gap-4 border-b border-white/10 py-4 text-3xl font-bold ${
                       active === l.id ? "text-acc-1" : "text-white"
                     }`}
                   >
-                    <span className="text-sm font-normal text-slate-500">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
+                    <span className="text-sm font-normal text-slate-500">{String(i + 1).padStart(2, "0")}</span>
                     {l.label}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>
@@ -224,18 +201,13 @@ export default function Navbar() {
               >
                 Download resume
               </a>
-              <button
-                onClick={openPalette}
-                className="rounded-lg border border-white/20 px-5 py-3 text-sm text-white"
-              >
+              <button onClick={openPalette} className="rounded-lg border border-white/20 px-5 py-3 text-sm text-white">
                 Search
               </button>
             </div>
 
             <SocialLinks className="mt-8" />
-            {CONTACT.email && (
-              <p className="mt-6 text-sm text-slate-400">{CONTACT.email}</p>
-            )}
+            {CONTACT.email && <p className="mt-6 text-sm text-slate-400">{CONTACT.email}</p>}
           </motion.div>
         )}
       </AnimatePresence>

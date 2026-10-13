@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SocialLinks from "@/components/SocialLinks";
 import LiveClock from "@/components/LiveClock";
 import Magnetic from "@/components/Magnetic";
@@ -101,9 +102,9 @@ export default function Footer() {
           <ul className="space-y-2.5">
             {NAV.map(([id, label]) => (
               <li key={id}>
-                <a href={"#" + id} className={link}>
+                <Link href={"/" + id} className={link}>
                   {label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
