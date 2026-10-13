@@ -1,11 +1,10 @@
-import DepthBackdrop from "@/components/DepthBackdrop";
 import type { ReactNode } from "react";
 import SettingsPanel from "@/components/SettingsPanel";
 import BootScreen from "@/components/BootScreen";
 import CustomCursor from "@/components/CustomCursor";
 import Spotlight from "@/components/Spotlight";
 import FX from "@/components/FX";
-import World from "@/components/World";
+import ScrollScene from "@/components/ScrollScene";
 import Navbar from "@/components/Navbar";
 import CommandPalette from "@/components/CommandPalette";
 import ScrollBar from "@/components/ScrollBar";
@@ -24,8 +23,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Spotlight />
       <FX />
-      <World />
-      <DepthBackdrop />
+      <ScrollScene />
 
       <Navbar />
       <SettingsPanel />
