@@ -30,7 +30,7 @@ export default function SplitSection({ id, children }: { id: string; children: R
     <section
       ref={ref}
       id={id}
-      style={{ "--accent": meta.accent } as CSSProperties}
+      style={{ "--accent": "var(--user-accent, " + meta.accent + ")" } as CSSProperties}
       className="relative overflow-x-clip border-y border-white/5 bg-black/50 backdrop-blur-[2px]"
     >
       {/* accent glow on the left edge: each section has its own colour */}

@@ -1,3 +1,4 @@
+import SettingsPanel from "@/components/SettingsPanel";
 import BootScreen from "@/components/BootScreen";
 import CustomCursor from "@/components/CustomCursor";
 import Spotlight from "@/components/Spotlight";
@@ -31,6 +32,7 @@ export default function Home() {
       <World />
 
       <Navbar />
+      <SettingsPanel />
       <CommandPalette />
       <ScrollBar />
       <BackToTop />

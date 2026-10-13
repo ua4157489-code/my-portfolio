@@ -350,3 +350,18 @@ body {
     opacity: 1 !important;
   }
 }
+
+/* ---------- display settings (v7) ---------- */
+html {
+  accent-color: var(--user-accent, #22d3ee);
+}
+html[data-text="large"] {
+  font-size: 118%;
+}
+html[data-motion="calm"] *,
+html[data-motion="calm"] *::before,
+html[data-motion="calm"] *::after {
+  animation: none !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

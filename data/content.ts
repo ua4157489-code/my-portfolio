@@ -10,14 +10,16 @@ export const TITLE = "Cybersecurity & DevOps";
 export const PROJECTS = [
   {
     name: "vulnlens",
-    description: "Add a one-line description of what vulnlens does.",
-    tags: ["Python", "Security"],
+    description:
+      "Reads results from multiple vulnerability scanners and converts them into one normalized data model. It gives you clean terminal summaries and JSON exports. The same issue always gets the same stable ID, so you can track what is new and what is fixed between scans.",
+    tags: ["Python", "Security", "Vulnerability Assessment", "CLI"],
     href: "https://github.com/ua4157489-code/vulnlens",
   },
   {
     name: "Cybersecurity-DevOps-Labs",
-    description: "Add a one-line description of what these labs cover.",
-    tags: ["DevOps", "Labs"],
+    description:
+      "A hands-on cybersecurity and DevOps lab portfolio. It documents Linux, SIEM, threat hunting, vulnerability assessment, cloud, Docker, Python, automation and security frameworks through practical labs and real-world scenarios.",
+    tags: ["DevOps", "Labs", "Linux", "SIEM"],
     href: "https://github.com/ua4157489-code/Cybersecurity-DevOps-Labs",
   },
 ];
