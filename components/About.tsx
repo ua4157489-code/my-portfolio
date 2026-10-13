@@ -1,6 +1,7 @@
 import Reveal from "@/components/Reveal";
 import ScrollWords from "@/components/ScrollWords";
 import AboutViz from "@/components/AboutViz";
+import PhotoParticles from "@/components/PhotoParticles";
 import SplitSection from "@/components/SplitSection";
 import { ABOUT, CORE_AREAS } from "@/data/content";
 
@@ -25,6 +26,8 @@ export default function About() {
   return (
     <SplitSection id="about">
       <div className="space-y-24">
+        <PhotoParticles className="relative mx-auto h-[420px] w-full max-w-md" />
+
         {/* the main statement: words light up as you scroll */}
         <ScrollWords
           text={lead}
