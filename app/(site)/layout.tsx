@@ -4,7 +4,7 @@ import BootScreen from "@/components/BootScreen";
 import CustomCursor from "@/components/CustomCursor";
 import Spotlight from "@/components/Spotlight";
 import FX from "@/components/FX";
-import ScrollScene from "@/components/ScrollScene";
+import ParticleScene from "@/components/ParticleScene";
 import Navbar from "@/components/Navbar";
 import CommandPalette from "@/components/CommandPalette";
 import ScrollBar from "@/components/ScrollBar";
@@ -23,7 +23,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Spotlight />
       <FX />
-      <ScrollScene />
+      <ParticleScene />
 
       <Navbar />
       <SettingsPanel />
