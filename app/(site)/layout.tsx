@@ -1,3 +1,4 @@
+import Enhance from "@/components/Enhance";
 import type { ReactNode } from "react";
 import SettingsPanel from "@/components/SettingsPanel";
 import BootScreen from "@/components/BootScreen";
@@ -24,6 +25,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <Spotlight />
       <FX />
       <ParticleScene />
+      <Enhance />
 
       <Navbar />
       <SettingsPanel />
