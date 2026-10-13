@@ -19,8 +19,20 @@ export const PROJECTS = [
     name: "Cybersecurity-DevOps-Labs",
     description:
       "A hands-on cybersecurity and DevOps lab portfolio. It documents Linux, SIEM, threat hunting, vulnerability assessment, cloud, Docker, Python, automation and security frameworks through practical labs and real-world scenarios.",
-    tags: ["DevOps", "Labs", "Linux", "SIEM"],
+    tags: ["DevOps", "Labs", "Linux", "Docker", "OWASP", "MITRE ATT&CK"],
     href: "https://github.com/ua4157489-code/Cybersecurity-DevOps-Labs",
+    modules: [
+      { folder: "Linux_DeepDive", label: "Linux Deep Dive", note: "Up to Lab 30: SSH Basics" },
+      { folder: "Python_DeepDive", label: "Python Deep Dive" },
+      { folder: "Docker", label: "Docker", note: "With terminal screenshots" },
+      { folder: "Container", label: "Containers & Kubernetes", note: "Kubernetes module, labs 18-20" },
+      { folder: "Vulnerability-Assessment", label: "Vulnerability Assessment" },
+      { folder: "DVWA", label: "DVWA", note: "Vulnerability portfolio matrix" },
+      { folder: "OWASP-Top-10", label: "OWASP Top 10", note: "All 10 labs complete" },
+      { folder: "MITRE-ATTACK-Labs", label: "MITRE ATT&CK Labs", note: "Includes T1027.010 command obfuscation" },
+      { folder: "Red-Team-Labs", label: "Red Team Labs" },
+      { folder: "CISTop20_ControlsLabs", label: "CIS Top 20 Controls" },
+    ],
   },
 ];
 

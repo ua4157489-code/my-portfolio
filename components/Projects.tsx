@@ -17,6 +17,7 @@ type Item = {
   language?: string;
   synced?: boolean;
   featured?: boolean;
+  modules?: { folder: string; label: string; note?: string }[];
 };
 
 type Repo = {
@@ -102,6 +103,7 @@ function Card({
         {typeof p.stars === "number" && <span>★ {p.stars}</span>}
         {typeof p.forks === "number" && <span>⑂ {p.forks}</span>}
         {p.pushed && <span>updated {ago(p.pushed)}</span>}
+        {p.modules && <span>{p.modules.length} modules</span>}
         {!p.synced && <span>not synced yet</span>}
       </div>
 
@@ -243,7 +245,7 @@ export default function Projects() {
     const list = items.filter(
       (i) =>
         (tag === "All" || i.tags.includes(tag)) &&
-        `${i.name} ${i.description} ${i.tags.join(" ")}`.toLowerCase().includes(query)
+        `${i.name} ${i.description} ${i.tags.join(" ")} ${(i.modules ?? []).map((m) => m.label).join(" ")}`.toLowerCase().includes(query)
     );
     if (sort === "updated") list.sort((a, b) => (b.pushed ?? "").localeCompare(a.pushed ?? ""));
     if (sort === "stars") list.sort((a, b) => (b.stars ?? 0) - (a.stars ?? 0));
@@ -578,6 +580,29 @@ export default function Projects() {
                     </li>
                   ))}
                 </ul>
+
+                {current.modules && current.modules.length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="text-sm font-semibold text-white">
+                      What is inside ({current.modules.length} modules)
+                    </h4>
+                    <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {current.modules.map((m) => (
+                        <li key={m.folder}>
+                          <a
+                            href={`${current.href}/tree/HEAD/${m.folder}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block rounded-lg border border-white/10 px-3 py-2 transition hover:border-[var(--accent)]"
+                          >
+                            <span className="block text-sm font-medium text-white">{m.label}</span>
+                            {m.note && <span className="block text-xs text-slate-300">{m.note}</span>}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <dl className="mt-6 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
                   {[
