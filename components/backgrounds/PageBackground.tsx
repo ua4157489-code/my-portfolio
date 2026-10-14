@@ -10,6 +10,8 @@ const load = (fn: () => Promise<{ default: ComponentType }>) =>
 
 // key = first URL segment
 const SCENES: Record<string, ComponentType> = {
+  "": load(() => import("./HomeScene")),
+  "": load(() => import("./HomeScene")),
   about: load(() => import("./AboutBackground")),
   experience: load(() => import("./ExperienceBackground")),
   education: load(() => import("./EducationBackground")),
