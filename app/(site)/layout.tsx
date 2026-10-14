@@ -7,7 +7,7 @@ import BootScreen from "@/components/BootScreen";
 import CustomCursor from "@/components/CustomCursor";
 import Spotlight from "@/components/Spotlight";
 import FX from "@/components/FX";
-import ParticleScene from "@/components/ParticleScene";
+import ServerRack from "@/components/ServerRack";
 import Navbar from "@/components/Navbar";
 import CommandPalette from "@/components/CommandPalette";
 import ScrollBar from "@/components/ScrollBar";
@@ -26,7 +26,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Spotlight />
       <FX />
-      <HideOn paths={["/about", "/experience", "/education", "/skills", "/projects", "/contact"]}><ParticleScene /></HideOn>
+      <HideOn paths={["/about", "/experience", "/education", "/skills", "/projects", "/contact"]}><ServerRack /></HideOn>
       <PageBackground />
       <Enhance />
 

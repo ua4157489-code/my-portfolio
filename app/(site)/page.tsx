@@ -1,15 +1,27 @@
 import Hero from "@/components/Hero";
-import HomeLive from "@/components/HomeLive";
 import Marquee from "@/components/Marquee";
-import ExploreCards from "@/components/ExploreCards";
+import SectionCards from "@/components/SectionCards";
+import {
+  Intro,
+  Focus,
+  FeaturedProjects,
+  ExperienceSnapshot,
+  EducationSnapshot,
+  FinalCta,
+} from "@/components/HomeSections";
 
 export default function Home() {
   return (
     <>
       <Hero />
       <Marquee />
-      <ExploreCards />
-      <HomeLive />
+      <Intro />
+      <Focus />
+      <FeaturedProjects />
+      <ExperienceSnapshot />
+      <EducationSnapshot />
+      <SectionCards />
+      <FinalCta />
     </>
   );
 }
