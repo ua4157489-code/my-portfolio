@@ -1,90 +1,142 @@
+import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import ScrollWords from "@/components/ScrollWords";
 import AboutViz from "@/components/AboutViz";
-import PhotoParticles from "@/components/PhotoParticles";
 import SplitSection from "@/components/SplitSection";
-import { ABOUT, CORE_AREAS } from "@/data/content";
+import {
+  AboutTerminal,
+  Block,
+  CountStats,
+  FocusGrid,
+  ProfileCard,
+  StoryTabs,
+  ToolsExplorer,
+} from "@/components/AboutParts";
+import { ABOUT, CORE_AREAS, NAME } from "@/data/content";
 
 const KEYWORDS = ["Offensive Security", "Red Teaming", "Vulnerability Assessment"];
 const LABELS = ["Experience", "Currently", "Interests", "Goals"];
+
 const TOOLS = [
-  "Linux",
-  "Python",
-  "Docker",
-  "Git/GitHub",
-  "Nmap",
-  "Burp Suite",
-  "OWASP ZAP",
-  "Wireshark",
-  "Metasploit",
-  "Wazuh",
+  { name: "Nmap", cat: "Offensive" },
+  { name: "Burp Suite", cat: "Offensive" },
+  { name: "OWASP ZAP", cat: "Offensive" },
+  { name: "Metasploit", cat: "Offensive" },
+  { name: "Wireshark", cat: "Network & SOC" },
+  { name: "Wazuh", cat: "Network & SOC" },
+  { name: "Linux", cat: "Dev & Infra" },
+  { name: "Python", cat: "Dev & Infra" },
+  { name: "Docker", cat: "Dev & Infra" },
+  { name: "Git/GitHub", cat: "Dev & Infra" },
 ];
 
 export default function About() {
   const [lead, ...rest] = ABOUT;
 
-  return (
-    <SplitSection id="about">
-      <div className="space-y-24">
-        <PhotoParticles className="relative mx-auto h-[420px] w-full max-w-md" />
+  const story = rest.slice(0, LABELS.length).map((text, i) => ({ label: LABELS[i], text }));
 
-        {/* the main statement: words light up as you scroll */}
+  const commands = [
+    {
+      cmd: "whoami",
+      out: [
+        NAME,
+        "Cybersecurity enthusiast / Red Team Intern at Tkxel",
+        "Diploma in Cloud Cyber Security, Al Nafi International College",
+      ],
+    },
+    { cmd: "focus", out: KEYWORDS.map((k) => `-> ${k}`) },
+    { cmd: "stack", out: [TOOLS.map((t) => t.name).join(" / ")] },
+    { cmd: "practice", out: ["-> TryHackMe", "-> Hack The Box"] },
+    { cmd: "goals", out: [rest[3] ?? "Learning from experienced security professionals."] },
+    {
+      cmd: "contact",
+      out: [
+        "email    ua4157489@gmail.com",
+        "github   github.com/ua4157489-code",
+        "linkedin linkedin.com/in/umar-ali-ba935031b",
+      ],
+    },
+  ];
+
+  return (
+    <SplitSection
+      id="about"
+      aside={
+        <ProfileCard
+          src="/me.png"
+          name={NAME}
+          role="Red Team Intern / Tkxel"
+          lines={["Offensive Security", "Red Teaming", "Vulnerability Assessment"]}
+        />
+      }
+    >
+      <div className="space-y-28">
+        {/* 1. the main statement: words light up as you scroll */}
         <ScrollWords
           text={lead}
           keywords={KEYWORDS}
           className="text-3xl font-semibold leading-snug tracking-tight md:text-4xl lg:text-[2.6rem]"
         />
 
-        {/* charts built from the real skills data */}
-        <AboutViz />
-
-        {/* the rest of the story, in ruled rows instead of boxes */}
+        {/* 2. numbers that count up */}
         <Reveal>
-          <dl className="divide-y divide-white/10 border-y border-white/10">
-            {rest.map((p, i) => (
-              <div
-                key={p}
-                className="grid gap-3 py-8 md:grid-cols-[10rem_minmax(0,1fr)] md:gap-10"
-              >
-                <dt className="text-base font-semibold text-acc-1">{LABELS[i]}</dt>
-                <dd className="text-lg leading-relaxed text-slate-200">{p}</dd>
-              </div>
-            ))}
-          </dl>
+          <CountStats
+            items={[
+              { label: "Focus areas", value: CORE_AREAS.length },
+              { label: "Tools in daily use", value: TOOLS.length },
+              { label: "Core disciplines", value: KEYWORDS.length },
+              { label: "Practice platforms", value: 2 },
+            ]}
+          />
         </Reveal>
 
-        {/* focus areas as a clean numbered list */}
-        <Reveal>
-          <h3 className="mb-6 text-2xl font-bold text-white">What I focus on</h3>
-          <ul className="grid gap-x-14 md:grid-cols-2">
-            {CORE_AREAS.map((a, i) => (
-              <li
-                key={a.label}
-                className="group flex items-center gap-4 border-b border-white/10 py-4 transition-colors hover:border-acc-1/60"
-              >
-                <span className="w-7 text-xl">{a.icon}</span>
-                <span className="text-lg text-slate-100 transition-transform duration-300 group-hover:translate-x-2 group-hover:text-white">
-                  {a.label}
-                </span>
-                <span className="ml-auto text-sm text-slate-500 transition-colors group-hover:text-acc-1">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+        {/* 3. interactive terminal */}
+        <Block
+          no="01"
+          title="whoami"
+          hint="A tiny terminal. Click a command, or type one (try help). Arrow keys bring back your history."
+        >
+          <AboutTerminal commands={commands} />
+        </Block>
 
-        {/* tools as one flowing line */}
+        {/* 4. the story as tabs */}
+        <Block no="02" title="My story" hint="Switch tabs, or use the arrow keys. It also plays on its own until you click.">
+          <StoryTabs items={story} />
+        </Block>
+
+        {/* 5. focus areas */}
+        <Block no="03" title="What I focus on" hint="Hover a card: it follows your cursor and tilts.">
+          <FocusGrid areas={CORE_AREAS} />
+        </Block>
+
+        {/* 6. charts built from the real skills data */}
+        <Block no="04" title="Skills at a glance">
+          <AboutViz />
+        </Block>
+
+        {/* 7. tools explorer */}
+        <Block no="05" title="Toolbox" hint="Filter by category or search by name.">
+          <ToolsExplorer tools={TOOLS} />
+        </Block>
+
+        {/* 8. call to action */}
         <Reveal>
-          <h3 className="mb-4 text-2xl font-bold text-white">Tools I use</h3>
-          <p className="text-lg leading-loose text-slate-300">
-            {TOOLS.map((t, i) => (
-              <span key={t}>
-                {t}
-                {i < TOOLS.length - 1 && <span className="mx-3 text-acc-2">/</span>}
-              </span>
-            ))}
-          </p>
+          <div className="ab-card ab-cta">
+            <div className="relative">
+              <h3 className="text-2xl font-bold text-white">Got a lab, a bug or a question?</h3>
+              <p className="mt-2 max-w-md text-slate-300">
+                I like talking about red teaming, web security and how things break. Say hello.
+              </p>
+            </div>
+            <div className="relative flex flex-wrap gap-3">
+              <Link href="/contact" className="ab-btn ab-btn-solid">
+                Get in touch
+              </Link>
+              <a href="/resume.pdf" download className="ab-btn">
+                Download CV
+              </a>
+            </div>
+          </div>
         </Reveal>
       </div>
     </SplitSection>

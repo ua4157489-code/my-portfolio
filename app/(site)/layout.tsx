@@ -1,3 +1,5 @@
+import PageBackground from "@/components/backgrounds/PageBackground";
+import HideOn from "@/components/HideOn";
 import Enhance from "@/components/Enhance";
 import type { ReactNode } from "react";
 import SettingsPanel from "@/components/SettingsPanel";
@@ -24,7 +26,8 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Spotlight />
       <FX />
-      <ParticleScene />
+      <HideOn paths={["/about", "/experience", "/education", "/skills", "/projects", "/contact"]}><ParticleScene /></HideOn>
+      <PageBackground />
       <Enhance />
 
       <Navbar />

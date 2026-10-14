@@ -1,9 +1,10 @@
-import ScrambleText from "@/components/ScrambleText";
+import { FaArrowRight, FaDownload, FaFolderOpen, FaPaperPlane } from "react-icons/fa6";
 import Typewriter from "@/components/Typewriter";
 import CountUp from "@/components/CountUp";
-import SocialLinks from "@/components/SocialLinks";
+import BrandLinks from "@/components/BrandLinks";
 import Magnetic from "@/components/Magnetic";
 import ThreatFeed from "@/components/ThreatFeed";
+import { HeroItem, HeroName, HeroStage } from "@/components/HeroInteractive";
 import { NAME, ROLES } from "@/data/content";
 import { FLAT, SKILL_GROUPS, SOURCES } from "@/data/skills";
 
@@ -25,54 +26,89 @@ export default function Hero() {
       {/* soft dark fade behind the text so it stays readable over the city */}
       <div className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-full bg-gradient-to-r from-black/80 via-black/40 to-transparent md:w-3/5" />
 
-      <div className="max-w-4xl">
+      <HeroStage>
+        <HeroItem>
+          <HeroName
+            name={NAME}
+            className="glitch bg-gradient-to-r from-white via-acc-1 to-acc-2 bg-clip-text text-[clamp(3.5rem,10vw,9rem)] font-extrabold leading-[0.95] tracking-tight text-transparent drop-shadow-[0_0_28px_rgba(34,211,238,0.35)]"
+          />
+        </HeroItem>
 
-        <h1
-          className="glitch bg-gradient-to-r from-white via-acc-1 to-acc-2 bg-clip-text text-[clamp(3.5rem,10vw,9rem)] font-extrabold leading-[0.95] tracking-tight text-transparent drop-shadow-[0_0_28px_rgba(34,211,238,0.35)]"
-          data-text={NAME}
-        >
-          <ScrambleText text={NAME} delay={1500} />
-        </h1>
+        <HeroItem className="mt-7">
+          <p className="min-h-[2.2rem] text-2xl font-semibold text-white md:text-3xl">
+            <span className="text-acc-1">&gt; </span>
+            <Typewriter phrases={ROLES} />
+          </p>
+        </HeroItem>
 
-        <p className="mt-7 min-h-[2.2rem] text-2xl font-semibold text-white md:text-3xl">
-          <span className="text-acc-1">&gt; </span>
-          <Typewriter phrases={ROLES} />
-        </p>
+        <HeroItem className="mt-5">
+          <p className="max-w-xl text-lg leading-relaxed text-slate-200">
+            Offensive security, red teaming and vulnerability assessment, built through
+            hands-on labs and a Red Team internship at Tkxel.
+          </p>
+        </HeroItem>
 
-        <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-200">
-          Offensive security, red teaming and vulnerability assessment, built through
-          hands-on labs and a Red Team internship at Tkxel.
-        </p>
+        <HeroItem className="mt-9">
+          <div className="flex flex-wrap items-center gap-5">
+            {/* primary: glow, sliding gradient, shine sweep */}
+            <Magnetic>
+              <span className="group relative inline-block">
+                <span
+                  aria-hidden
+                  className="absolute -inset-1 animate-pulse rounded-xl bg-gradient-to-r from-acc-1 to-acc-2 opacity-50 blur-lg transition duration-300 group-hover:opacity-90"
+                />
+                <a
+                  href="#projects"
+                  className="relative inline-flex items-center gap-3 overflow-hidden rounded-lg bg-gradient-to-r from-acc-1 via-acc-2 to-acc-1 bg-[length:200%_100%] px-8 py-3.5 text-base font-extrabold text-black transition-[background-position,transform] duration-500 hover:bg-[position:100%_0] active:scale-95"
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 -skew-x-12 bg-white/50 opacity-0 blur-sm transition-all duration-700 group-hover:left-full group-hover:opacity-100"
+                  />
+                  <FaFolderOpen className="relative text-lg" />
+                  <span className="relative">View projects</span>
+                  <FaArrowRight className="relative text-sm transition-transform duration-300 group-hover:translate-x-1.5" />
+                </a>
+              </span>
+            </Magnetic>
 
-        <div className="mt-9 flex flex-wrap items-center gap-4">
-          <Magnetic>
-            <a
-              href="#projects"
-              className="inline-block rounded-lg bg-gradient-to-r from-acc-1 to-acc-2 px-7 py-3 text-base font-extrabold text-black shadow-[0_0_28px_rgba(34,211,238,0.45)] transition hover:brightness-110"
-            >
-              View projects
-            </a>
-          </Magnetic>
-          <Magnetic>
-            <a
-              href="#contact"
-              className="inline-block rounded-lg border border-white/25 bg-white/5 px-7 py-3 text-base font-semibold text-white transition hover:border-acc-1 hover:bg-acc-1/10"
-            >
-              Get in touch
-            </a>
-          </Magnetic>
-          <a
-            href="/resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-2 py-3 text-base text-slate-300 underline decoration-acc-2/60 underline-offset-4 transition hover:text-white"
-          >
-            Download CV
-          </a>
-        </div>
+            {/* secondary: fill sweeps in, paper plane flies */}
+            <Magnetic>
+              <a
+                href="#contact"
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-lg border border-white/25 bg-white/5 px-8 py-3.5 text-base font-semibold text-white transition duration-300 hover:border-acc-1 hover:shadow-[0_0_28px_rgba(34,211,238,0.35)] active:scale-95"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-0 origin-left scale-x-0 bg-acc-1/20 transition-transform duration-500 group-hover:scale-x-100"
+                />
+                <FaPaperPlane className="relative text-base transition-transform duration-500 group-hover:-translate-y-1 group-hover:translate-x-1.5 group-hover:rotate-12" />
+                <span className="relative">Get in touch</span>
+              </a>
+            </Magnetic>
 
-        <SocialLinks className="mt-8" />
-      </div>
+            {/* tertiary: dashed pill that solidifies, icon drops */}
+            <Magnetic>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center gap-3 rounded-lg border border-dashed border-acc-2/60 px-6 py-3.5 text-base text-slate-200 transition duration-300 hover:border-solid hover:border-acc-2 hover:bg-acc-2/10 hover:text-white active:scale-95"
+              >
+                <FaDownload className="text-base transition-transform duration-300 group-hover:translate-y-1" />
+                <span>Download CV</span>
+                <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-slate-300 transition group-hover:bg-acc-2/30">
+                  PDF
+                </span>
+              </a>
+            </Magnetic>
+          </div>
+        </HeroItem>
+
+        <HeroItem>
+          <BrandLinks className="mt-8" />
+        </HeroItem>
+      </HeroStage>
 
       {/* live event feed (wide screens) */}
       <div className="absolute bottom-40 right-[4vw] hidden xl:block">

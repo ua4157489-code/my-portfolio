@@ -14,7 +14,7 @@ const META: Record<string, { label: string; kicker: string; accent: string }> = 
 };
 const ORDER = Object.keys(META);
 
-export default function SplitSection({ id, children }: { id: string; children: ReactNode }) {
+export default function SplitSection({ id, children, aside }: { id: string; children: ReactNode; aside?: ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -31,7 +31,7 @@ export default function SplitSection({ id, children }: { id: string; children: R
       ref={ref}
       id={id}
       style={{ "--accent": "var(--user-accent, " + meta.accent + ")" } as CSSProperties}
-      className="relative overflow-x-clip border-y border-white/5 bg-black/50 backdrop-blur-[2px]"
+      className="relative overflow-x-clip border-y border-white/5 bg-black/25"
     >
       {/* accent glow on the left edge: each section has its own colour */}
       <div
@@ -64,6 +64,7 @@ export default function SplitSection({ id, children }: { id: string; children: R
             }}
             className="mt-5 block h-0.5 w-28 origin-left"
           />
+        {aside && <div className="mt-8">{aside}</div>}
         </aside>
 
         <div className="min-w-0">{children}</div>
