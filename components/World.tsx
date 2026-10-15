@@ -49,23 +49,23 @@ const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
 type Pose = { x: number; y: number; s: number; ry: number; rx: number; door: number; mode: number };
 
 const HOME: { at: number; p: Pose }[] = [
-  { at: 0.0, p: { x: 0.25, y: 0, s: 1.0, ry: -0.55, rx: 0.05, door: 0, mode: 0 } },
-  { at: 0.22, p: { x: -0.26, y: 0, s: 1.0, ry: 0.4, rx: 0.05, door: 1, mode: 1 } },
-  { at: 0.38, p: { x: 0.27, y: 0, s: 1.2, ry: -0.15, rx: 0.1, door: 1, mode: 2 } },
-  { at: 0.53, p: { x: 0.0, y: 0, s: 1.05, ry: 1.4, rx: 0.05, door: 1, mode: 3 } },
-  { at: 0.67, p: { x: 0.27, y: 0, s: 1.0, ry: 2.9, rx: 0.08, door: 0.5, mode: 1 } },
-  { at: 0.8, p: { x: -0.27, y: 0, s: 1.0, ry: 4.3, rx: 0.05, door: 1, mode: 2 } },
-  { at: 0.91, p: { x: 0.0, y: 0.02, s: 0.75, ry: 5.0, rx: 0.05, door: 0, mode: 0 } },
-  { at: 1.0, p: { x: 0.26, y: 0, s: 1.05, ry: 6.0, rx: 0.05, door: 0, mode: 0 } },
+  { at: 0.0, p: { x: 0.25, y: 0, s: 0.70, ry: -0.55, rx: 0.05, door: 0, mode: 0 } },
+  { at: 0.22, p: { x: -0.26, y: 0, s: 0.70, ry: 0.4, rx: 0.05, door: 1, mode: 1 } },
+  { at: 0.38, p: { x: 0.27, y: 0, s: 0.84, ry: -0.15, rx: 0.1, door: 1, mode: 2 } },
+  { at: 0.53, p: { x: 0.0, y: 0, s: 0.73, ry: 1.4, rx: 0.05, door: 1, mode: 3 } },
+  { at: 0.67, p: { x: 0.27, y: 0, s: 0.70, ry: 2.9, rx: 0.08, door: 0.5, mode: 1 } },
+  { at: 0.8, p: { x: -0.27, y: 0, s: 0.70, ry: 4.3, rx: 0.05, door: 1, mode: 2 } },
+  { at: 0.91, p: { x: 0.0, y: 0.02, s: 0.52, ry: 5.0, rx: 0.05, door: 0, mode: 0 } },
+  { at: 1.0, p: { x: 0.26, y: 0, s: 0.73, ry: 6.0, rx: 0.05, door: 0, mode: 0 } },
 ];
 
 const PAGE: Record<string, Pose> = {
-  about: { x: -0.28, y: 0, s: 0.9, ry: 0.5, rx: 0.05, door: 0.8, mode: 0 },
-  experience: { x: 0.28, y: 0, s: 0.9, ry: -0.6, rx: 0.05, door: 1, mode: 2 },
-  education: { x: -0.28, y: 0, s: 0.9, ry: 0.9, rx: 0.05, door: 0.6, mode: 1 },
-  skills: { x: 0.28, y: 0, s: 0.9, ry: -0.3, rx: 0.05, door: 1, mode: 2 },
-  projects: { x: -0.28, y: 0, s: 0.9, ry: 0.4, rx: 0.05, door: 1, mode: 1 },
-  contact: { x: 0.0, y: -0.02, s: 0.95, ry: 0.2, rx: 0.05, door: 1, mode: 0 },
+  about: { x: -0.28, y: 0, s: 0.63, ry: 0.5, rx: 0.05, door: 0.8, mode: 0 },
+  experience: { x: 0.28, y: 0, s: 0.63, ry: -0.6, rx: 0.05, door: 1, mode: 2 },
+  education: { x: -0.28, y: 0, s: 0.63, ry: 0.9, rx: 0.05, door: 0.6, mode: 1 },
+  skills: { x: 0.28, y: 0, s: 0.63, ry: -0.3, rx: 0.05, door: 1, mode: 2 },
+  projects: { x: -0.28, y: 0, s: 0.63, ry: 0.4, rx: 0.05, door: 1, mode: 1 },
+  contact: { x: 0.0, y: -0.02, s: 0.66, ry: 0.2, rx: 0.05, door: 1, mode: 0 },
 };
 
 const mix = (a: number, b: number, f: number) => a + (b - a) * f;
@@ -807,7 +807,7 @@ function Rack({
       <lineSegments ref={cage} geometry={wire.cageGeo}>
         <lineBasicMaterial ref={cageMat} color="#22d3ee" transparent opacity={0.1} depthWrite={false} blending={THREE.AdditiveBlending} />
       </lineSegments>
-      <HackerDesk x={-2.8} z={1.5} scale={1.25} rotY={0.9} />
+      <HackerDesk x={-1.3} z={3.0} scale={2.4} rotY={0.5} />
       <group ref={ring1}>
         <lineLoop geometry={wire.ring1}>
           <lineBasicMaterial color="#a78bfa" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
