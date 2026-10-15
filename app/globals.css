@@ -365,3 +365,128 @@ html[data-motion="calm"] *::after {
   transition-duration: 0.01ms !important;
   scroll-behavior: auto !important;
 }
+
+/* ---------- home v14 ---------- */
+@property --ang {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes spin-ang {
+  to {
+    --ang: 360deg;
+  }
+}
+@keyframes name-shine {
+  50% {
+    background-position: 100% 0;
+  }
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes cue-drop {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  51% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+@keyframes dot-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(34, 211, 238, 0);
+  }
+}
+
+/* card with a rainbow border that travels around it */
+.glow-border {
+  position: relative;
+  border-radius: 1.25rem;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(rgba(4, 9, 18, 0.9), rgba(4, 9, 18, 0.9)) padding-box,
+    conic-gradient(from var(--ang), #22d3ee, #a78bfa, #ff4d9d, #fbbf24, #22d3ee) border-box;
+  box-shadow: 0 0 60px rgba(34, 211, 238, 0.08);
+  animation: spin-ang 7s linear infinite;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.name-gradient {
+  background: linear-gradient(100deg, #fff 0%, #67e8f9 30%, #a78bfa 60%, #ff4d9d 85%, #fff 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: name-shine 8s ease-in-out infinite;
+}
+
+.stroke-text {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+}
+
+.caret {
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: #22d3ee;
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+.badge-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #22d3ee;
+  animation: dot-pulse 1.6s ease-out infinite;
+}
+
+.cue-line {
+  display: block;
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(#22d3ee, transparent);
+  animation: cue-drop 2s ease-in-out infinite;
+}
+
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 211, 238, 0.4) transparent;
+}
+
+/* light that follows the mouse on tilting cards */
+.tilt-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.tilt-glare::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.12), transparent 55%);
+}
+.tilt-card:hover .tilt-glare::before {
+  opacity: 1;
+}
