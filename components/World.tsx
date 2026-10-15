@@ -807,14 +807,14 @@ function Rack({
         <lineBasicMaterial ref={cageMat} color="#22d3ee" transparent opacity={0.1} depthWrite={false} blending={THREE.AdditiveBlending} />
       </lineSegments>
       <group ref={ring1}>
-        <line_ geometry={wire.ring1}>
+        <lineLoop geometry={wire.ring1}>
           <lineBasicMaterial color="#a78bfa" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
-        </line>
+        </lineLoop>
       </group>
       <group ref={ring2}>
-        <line_ geometry={wire.ring2}>
+        <lineLoop geometry={wire.ring2}>
           <lineBasicMaterial color="#22d3ee" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
-        </line>
+        </lineLoop>
       </group>
       <group ref={net}>
         <lineSegments>
