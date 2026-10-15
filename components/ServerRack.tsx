@@ -418,7 +418,7 @@ function Rack({ path }: { path: string }) {
     st.next -= delta;
     if (st.next <= 0) {
       fire();
-      st.next = 0.5 + Math.random() * 0.9;
+      st.next = 0.9 + Math.random() * 1.6;
     }
     for (let i = 0; i < st.flash.length; i++) st.flash[i] = Math.max(0, st.flash[i] - delta * 0.8);
     st.alert = Math.max(0, st.alert - delta * 0.45);
@@ -502,7 +502,7 @@ function Rack({ path }: { path: string }) {
       s.mesh.visible = true;
       const e = 1 - Math.pow(1 - Math.min(k * 1.6, 1), 3);
       s.mesh.position.set(s.x0 + s.dx * e, s.y0 + s.dy * e, FZ + 0.05 + 0.95 * e);
-      const sc = 2.1 * (0.55 + 0.45 * e);
+      const sc = 1.5 * (0.55 + 0.45 * e);
       s.mesh.scale.set(sc, sc, 1);
       s.mesh.quaternion.copy(_q);
       s.mat.opacity = Math.min(k / 0.07, 1) * (k > 0.7 ? (1 - k) / 0.3 : 1);
@@ -675,7 +675,7 @@ export default function ServerRack() {
         className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_55%,rgba(14,116,144,0.18),transparent_60%),#03050a]"
       />
       <div className="pointer-events-none fixed inset-0 z-0">
-        <Canvas camera={{ position: [0, 0.15, 9], fov: 34 }} dpr={[1, 1]} gl={{ antialias: true, alpha: true }}>
+        <Canvas camera={{ position: [0, 0.15, 9], fov: 34 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
           <Environment resolution={256} frames={1}>
             <group rotation={[-Math.PI / 3, 0, 1]}>
               <Lightformer form="rect" intensity={3} position={[0, 5, -5]} scale={[10, 10, 1]} color="#ffffff" />
