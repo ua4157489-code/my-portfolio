@@ -546,16 +546,6 @@ export default function HackerDesk({
         <pointLight ref={screenLight} position={[0, 1.1, -0.55]} color="#38bdf8" intensity={5} distance={3.5} />
       </group>
 
-      {/* cable and data pulses (rack space) */}
-      <mesh geometry={cable.geo}>
-        <meshStandardMaterial color="#1f6fe5" roughness={0.45} metalness={0.2} />
-      </mesh>
-      {[0, 1, 2, 3].map((k) => (
-        <mesh key={k} ref={(m) => { pulses.current[k] = m; }}>
-          <sphereGeometry args={[0.022, 10, 10]} />
-          <meshBasicMaterial color="#7dd3fc" toneMapped={false} />
-        </mesh>
-      ))}
-    </>
+          </>
   );
 }
