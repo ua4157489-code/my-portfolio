@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject } from "react";
 import { usePathname } from "next/navigation";
 import * as THREE from "three";
+import KaliLaptop from "./KaliLaptop";
 
 // ---------- rack dimensions ----------
 const W = 1.2;
@@ -806,6 +807,7 @@ function Rack({
       <lineSegments ref={cage} geometry={wire.cageGeo}>
         <lineBasicMaterial ref={cageMat} color="#22d3ee" transparent opacity={0.1} depthWrite={false} blending={THREE.AdditiveBlending} />
       </lineSegments>
+      <KaliLaptop />
       <group ref={ring1}>
         <lineLoop geometry={wire.ring1}>
           <lineBasicMaterial color="#a78bfa" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
