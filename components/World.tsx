@@ -807,7 +807,7 @@ function Rack({
       <lineSegments ref={cage} geometry={wire.cageGeo}>
         <lineBasicMaterial ref={cageMat} color="#22d3ee" transparent opacity={0.1} depthWrite={false} blending={THREE.AdditiveBlending} />
       </lineSegments>
-      <HackerDesk x={-1.3} z={3.0} scale={2.4} rotY={0.5} />
+      <HackerDesk x={-3.8} z={2.2} scale={1.8} rotY={0.45} />
       <group ref={ring1}>
         <lineLoop geometry={wire.ring1}>
           <lineBasicMaterial color="#a78bfa" transparent opacity={0.45} blending={THREE.AdditiveBlending} depthWrite={false} />
@@ -1076,7 +1076,6 @@ function Scene() {
       <pointLight color="#ff4d9d" intensity={30} distance={14} decay={2} position={[4, 2, -3]} />
 
       <primitive object={grid} position={[0, FLOOR, 0]} />
-      <FarRacks sh={sh} />
 
       <group ref={root}>
         <Rack sh={sh} hits={hits} />
