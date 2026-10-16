@@ -70,7 +70,7 @@ export default function Enhance() {
       <canvas
         ref={rain}
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-0 opacity-[0.13]"
+        className="hidden pointer-events-none fixed inset-0 z-0 opacity-[0.13]"
       />
       <div
         ref={glow}
