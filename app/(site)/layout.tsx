@@ -26,7 +26,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <CustomCursor />
       <Spotlight />
       <FX />
-      <HideOn paths={["/about", "/experience", "/education", "/skills", "/projects", "/contact"]}><ScrollObjects /></HideOn>
+      <HideOn paths={["/"]}><ScrollObjects /></HideOn>
       <PageBackground />
       <Enhance />
 

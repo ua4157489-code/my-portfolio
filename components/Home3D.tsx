@@ -1,0 +1,400 @@
+"use client";
+
+import Link from "next/link";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import type { MutableRefObject, ReactNode } from "react";
+import * as THREE from "three";
+import HackerDesk from "./HackerDesk";
+
+type Shared = MutableRefObject<{ p: number; mx: number; my: number }>;
+
+const GAP = 14; // distance between stations
+const LAST = 4; // index of the last station
+const CAM_D = 9; // camera distance in front of a station
+const rnd = Math.random;
+const sstep = THREE.MathUtils.smoothstep;
+
+/* ---------- layout helper: stations sit left/right on desktop, centered on phones ---------- */
+function useLayout() {
+  const size = useThree((s) => s.size);
+  const narrow = size.width < 768;
+  const halfW = Math.tan(THREE.MathUtils.degToRad(17)) * CAM_D * (size.width / size.height);
+  return { side: narrow ? 0 : halfW * 0.45, y: narrow ? 1.15 : 0, k: narrow ? 0.6 : 1 };
+}
+
+// a station grows in as the camera arrives and shrinks away as it leaves
+function Station({ i, dir, lift = 0, bob = true, children }: { i: number; dir: number; lift?: number; bob?: boolean; children: ReactNode }) {
+  const g = useRef<THREE.Group>(null!);
+  const L = useLayout();
+  useFrame((state) => {
+    const d = Math.abs(state.camera.position.z - (CAM_D - i * GAP));
+    const a = 1 - sstep(d, 3, GAP * 0.9);
+    const o = g.current;
+    o.visible = a > 0.01;
+    o.scale.setScalar(L.k * (0.4 + 0.6 * a));
+    const b = bob ? Math.sin(state.clock.elapsedTime * 0.7 + i) * 0.12 : 0;
+    o.position.set(dir * L.side, L.y + lift + b, -i * GAP);
+  });
+  return <group ref={g}>{children}</group>;
+}
+
+/* ---------- station objects ---------- */
+function Hero({ sh }: { sh: Shared }) {
+  const g = useRef<THREE.Group>(null!);
+  useFrame((_, delta) => {
+    g.current.rotation.y = THREE.MathUtils.damp(g.current.rotation.y, 0.5 + sh.current.mx * 0.3, 3, delta);
+  });
+  return (
+    <group ref={g} position={[0, -1.6, 0]} scale={1.2}>
+      <HackerDesk x={0} z={0} floorY={0} scale={1} rotY={0} />
+      <mesh rotation-x={-Math.PI / 2} position={[-0.3, 0.01, -0.2]}>
+        <circleGeometry args={[2.8, 48]} />
+        <meshBasicMaterial color="#0b3a4a" transparent opacity={0.35} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function Globe() {
+  const a = useRef<THREE.Group>(null!);
+  const b = useRef<THREE.Group>(null!);
+  useFrame((_, dt) => {
+    a.current.rotation.y += dt * 0.25;
+    b.current.rotation.y -= dt * 0.6;
+    b.current.rotation.x += dt * 0.2;
+  });
+  return (
+    <group>
+      <group ref={a}>
+        <mesh>
+          <icosahedronGeometry args={[1.5, 2]} />
+          <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.55} />
+        </mesh>
+        <mesh>
+          <sphereGeometry args={[1.42, 32, 32]} />
+          <meshBasicMaterial color="#04101a" />
+        </mesh>
+      </group>
+      <group ref={b}>
+        {[0, 1, 2, 3, 4, 5].map((k) => (
+          <mesh key={k} position={[Math.cos(k * 1.047) * 2.3, Math.sin(k * 2.1) * 0.6, Math.sin(k * 1.047) * 2.3]}>
+            <sphereGeometry args={[0.07, 12, 12]} />
+            <meshBasicMaterial color={k % 2 ? "#a78bfa" : "#22d3ee"} />
+          </mesh>
+        ))}
+        <mesh rotation={[1.2, 0, 0]}>
+          <torusGeometry args={[2.3, 0.01, 6, 96]} />
+          <meshBasicMaterial color="#a78bfa" transparent opacity={0.5} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+function Lattice() {
+  const g = useRef<THREE.Group>(null!);
+  const inst = useRef<THREE.InstancedMesh>(null!);
+  const m = useMemo(() => new THREE.Object3D(), []);
+  const cells = useMemo(() => {
+    const a: [number, number, number][] = [];
+    for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) a.push([x, y, z]);
+    return a;
+  }, []);
+  useFrame((state, dt) => {
+    const t = state.clock.elapsedTime;
+    g.current.rotation.y += dt * 0.3;
+    g.current.rotation.x = Math.sin(t * 0.3) * 0.3;
+    const spread = 1 + 0.15 * Math.sin(t * 0.8);
+    cells.forEach(([x, y, z], i) => {
+      m.position.set(x * 0.62 * spread, y * 0.62 * spread, z * 0.62 * spread);
+      m.scale.setScalar(0.3 + 0.1 * Math.sin(t * 1.5 + i));
+      m.rotation.set(t * 0.4 + i, t * 0.3, 0);
+      m.updateMatrix();
+      inst.current.setMatrixAt(i, m.matrix);
+    });
+    inst.current.instanceMatrix.needsUpdate = true;
+  });
+  return (
+    <group ref={g}>
+      <instancedMesh ref={inst} args={[undefined, undefined, 27]} frustumCulled={false}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshBasicMaterial color="#a78bfa" wireframe />
+      </instancedMesh>
+      <mesh>
+        <sphereGeometry args={[0.22, 16, 16]} />
+        <meshBasicMaterial color="#22d3ee" />
+      </mesh>
+    </group>
+  );
+}
+
+function Knot() {
+  const g = useRef<THREE.Group>(null!);
+  useFrame((_, dt) => {
+    g.current.rotation.y += dt * 0.35;
+    g.current.rotation.x += dt * 0.15;
+  });
+  return (
+    <group ref={g} scale={1.25}>
+      <mesh>
+        <torusKnotGeometry args={[1, 0.3, 160, 20]} />
+        <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.6} />
+      </mesh>
+      <mesh scale={0.97}>
+        <torusKnotGeometry args={[1, 0.3, 160, 20]} />
+        <meshBasicMaterial color="#05080f" />
+      </mesh>
+    </group>
+  );
+}
+
+function Portal() {
+  const rings = useRef<THREE.Group>(null!);
+  const core = useRef<THREE.Mesh>(null!);
+  useFrame((state, dt) => {
+    rings.current.children.forEach((c, k) => {
+      c.rotation.z += dt * (0.3 + k * 0.15) * (k % 2 ? -1 : 1);
+    });
+    core.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 2) * 0.12);
+  });
+  return (
+    <group>
+      <group ref={rings}>
+        {[0.8, 1.3, 1.8, 2.3].map((r, k) => (
+          <mesh key={r} rotation={[0, 0, k]}>
+            <torusGeometry args={[r, 0.02, 8, 96, Math.PI * 1.5]} />
+            <meshBasicMaterial color={k % 2 ? "#a78bfa" : "#22d3ee"} />
+          </mesh>
+        ))}
+      </group>
+      <mesh ref={core}>
+        <sphereGeometry args={[0.35, 24, 24]} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.85} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ---------- tunnel ---------- */
+function Gates() {
+  const grp = useRef<THREE.Group>(null!);
+  useFrame((_, dt) => {
+    grp.current.children.forEach((c, k) => {
+      c.rotation.z += dt * (k % 2 ? 0.1 : -0.1);
+    });
+  });
+  return (
+    <group ref={grp}>
+      {Array.from({ length: 20 }, (_, k) => (
+        <mesh key={k} position={[0, 0, 8 - k * 3.8]} rotation={[0, 0, k]}>
+          <torusGeometry args={[5.4 + (k % 3) * 0.4, 0.015, 6, 96, Math.PI * 1.5]} />
+          <meshBasicMaterial color={k % 2 ? "#a78bfa" : "#22d3ee"} transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Field() {
+  const pos = useMemo(() => {
+    const a = new Float32Array(1800 * 3);
+    for (let i = 0; i < 1800; i++) {
+      a[i * 3] = (rnd() - 0.5) * 30;
+      a[i * 3 + 1] = (rnd() - 0.5) * 16;
+      a[i * 3 + 2] = 8 - rnd() * 78;
+    }
+    return a;
+  }, []);
+  return (
+    <points frustumCulled={false}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[pos, 3]} />
+      </bufferGeometry>
+      <pointsMaterial size={0.045} color="#67e8f9" transparent opacity={0.7} depthWrite={false} blending={THREE.AdditiveBlending} sizeAttenuation />
+    </points>
+  );
+}
+
+/* ---------- camera flight ---------- */
+function Rig({ sh }: { sh: Shared }) {
+  const lights = useRef<THREE.Group>(null!);
+  const z = useRef(CAM_D);
+  const prev = useRef(CAM_D);
+  const roll = useRef(0);
+  useFrame((state, delta) => {
+    const cam = state.camera as THREE.PerspectiveCamera;
+    const d = THREE.MathUtils.damp;
+    z.current = d(z.current, CAM_D - sh.current.p * LAST * GAP, 3.2, delta);
+    const v = (z.current - prev.current) / Math.max(delta, 0.001);
+    prev.current = z.current;
+    cam.position.x = d(cam.position.x, sh.current.mx * 0.7, 2.5, delta);
+    cam.position.y = d(cam.position.y, 0.4 + sh.current.my * 0.35, 2.5, delta);
+    cam.position.z = z.current;
+    cam.lookAt(cam.position.x * 0.4, 0, z.current - CAM_D);
+    roll.current = d(roll.current, THREE.MathUtils.clamp(v * 0.003, -0.1, 0.1), 4, delta);
+    cam.rotateZ(roll.current);
+    cam.fov = d(cam.fov, 34 + Math.min(Math.abs(v) * 0.3, 8), 4, delta);
+    cam.updateProjectionMatrix();
+    lights.current.position.z = z.current - CAM_D;
+  });
+  return (
+    <group ref={lights}>
+      <pointLight position={[-4, 1.5, 4]} intensity={16} color="#22d3ee" distance={12} />
+      <pointLight position={[4, 0.5, 3]} intensity={14} color="#a855f7" distance={12} />
+      <pointLight position={[0, 3, -3]} intensity={10} color="#38bdf8" distance={12} />
+    </group>
+  );
+}
+
+/* ---------- the page ---------- */
+const card = "max-w-md rounded border border-cyan-400/30 bg-black/55 p-6 backdrop-blur-md";
+const btn = "rounded border border-cyan-400/60 px-4 py-2 text-sm text-cyan-300 transition hover:bg-cyan-400 hover:text-black";
+
+export default function Home3D() {
+  const sec = useRef<HTMLElement>(null);
+  const layer = useRef<HTMLDivElement>(null);
+  const ch = useRef<(HTMLDivElement | null)[]>([]);
+  const sh = useRef({ p: 0, mx: 0, my: 0 });
+
+  useEffect(() => {
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      sh.current.mx = (e.clientX / window.innerWidth) * 2 - 1;
+      sh.current.my = -((e.clientY / window.innerHeight) * 2 - 1);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const el = sec.current;
+      if (!el) return;
+      const vh = window.innerHeight;
+      const r = el.getBoundingClientRect();
+      const p = THREE.MathUtils.clamp(-r.top / Math.max(r.height - vh, 1), 0, 1);
+      sh.current.p = p;
+      const L = layer.current;
+      if (L) {
+        L.style.visibility = r.bottom <= 0 || r.top >= vh ? "hidden" : "visible";
+        L.style.clipPath = `inset(0 0 ${Math.max(0, vh - r.bottom)}px 0)`;
+      }
+      ch.current.forEach((c, i) => {
+        if (!c) return;
+        const o = 1 - sstep(Math.abs(p - i / LAST), 0.06, 0.15);
+        c.style.opacity = String(o);
+        c.style.transform = `translate3d(0, ${(1 - o) * 24}px, 0)`;
+        c.style.pointerEvents = o > 0.5 ? "auto" : "none";
+        c.style.visibility = o < 0.01 ? "hidden" : "visible";
+      });
+    };
+    tick();
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+    };
+  }, []);
+
+  const frame = "absolute inset-0 mx-auto flex max-w-6xl items-end px-6 pb-20 md:items-center md:pb-0";
+
+  const chapters: { cls: string; node: ReactNode }[] = [
+    {
+      cls: "justify-start",
+      node: (
+        <div className="max-w-xl">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-black/40 px-3 py-1 text-xs text-cyan-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Cybersecurity &amp; DevOps
+          </p>
+          <h1 className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-500 bg-clip-text text-5xl font-bold text-transparent md:text-7xl">Umar Ali</h1>
+          <p className="mt-5 text-sm leading-relaxed text-slate-300 md:text-base">
+            I am a cybersecurity enthusiast focused on Offensive Security, Red Teaming, and Vulnerability Assessment, with a strong interest in understanding real-world security weaknesses.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href="/projects" className={btn}>View projects</Link>
+            <Link href="/contact" className={btn}>Get in touch</Link>
+            <a href="/resume.pdf" download className={btn}>Download CV</a>
+          </div>
+          <p className="mt-8 text-xs tracking-widest text-cyan-400/70">SCROLL TO FLY THROUGH ↓</p>
+        </div>
+      ),
+    },
+    {
+      cls: "justify-center md:justify-end",
+      node: (
+        <div className={card}>
+          <p className="text-xs tracking-widest text-cyan-400/80">01 / 04</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">Web application security</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">Testing web apps the way an attacker would, then validating and documenting what I find.</p>
+          <Link href="/about" className={`${btn} mt-5 inline-block`}>./about</Link>
+        </div>
+      ),
+    },
+    {
+      cls: "justify-center md:justify-start",
+      node: (
+        <div className={card}>
+          <p className="text-xs tracking-widest text-cyan-400/80">02 / 04</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">Skills and tooling</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">Recon, enumeration and scripting, with Linux, Python and the standard offensive security toolset.</p>
+          <Link href="/skills" className={`${btn} mt-5 inline-block`}>./skills</Link>
+        </div>
+      ),
+    },
+    {
+      cls: "justify-center md:justify-end",
+      node: (
+        <div className={card}>
+          <p className="text-xs tracking-widest text-cyan-400/80">03 / 04</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">Hands-on labs</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">DVWA, OWASP Top 10 and MITRE ATT&amp;CK write-ups, plus Linux, Docker and Kubernetes labs.</p>
+          <Link href="/projects" className={`${btn} mt-5 inline-block`}>./projects</Link>
+        </div>
+      ),
+    },
+    {
+      cls: "justify-center text-center",
+      node: (
+        <div className={`${card} text-center`}>
+          <p className="text-xs tracking-widest text-cyan-400/80">04 / 04</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">Let&apos;s work together</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">Open to security internships, collaboration and conversations about breaking things responsibly.</p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            <Link href="/contact" className={btn}>./contact</Link>
+            <a href="https://github.com/ua4157489-code" target="_blank" rel="noopener noreferrer" className={btn}>GitHub</a>
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <section id="top" ref={sec} className="relative z-10 h-[450vh]">
+      <div ref={layer} className="fixed inset-0 z-[5] overflow-hidden bg-[#03050a]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_55%,rgba(14,116,144,0.22),transparent_60%),radial-gradient(ellipse_at_10%_90%,rgba(124,58,237,0.14),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-0">
+          <Canvas camera={{ position: [0, 0.4, CAM_D], fov: 34 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+            <ambientLight intensity={0.9} />
+            <directionalLight position={[3, 4, 5]} intensity={1} color="#cfe8ff" />
+            <Rig sh={sh} />
+            <Field />
+            <Gates />
+            <Station i={0} dir={1} bob={false}><Hero sh={sh} /></Station>
+            <Station i={1} dir={-1}><Globe /></Station>
+            <Station i={2} dir={1}><Lattice /></Station>
+            <Station i={3} dir={-1}><Knot /></Station>
+            <Station i={4} dir={0} lift={0.9}><Portal /></Station>
+          </Canvas>
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.55))]" />
+        {chapters.map((c, i) => (
+          <div
+            key={i}
+            ref={(el) => { ch.current[i] = el; }}
+            className={`${frame} ${c.cls}`}
+            style={{ opacity: i === 0 ? 1 : 0 }}
+          >
+            {c.node}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
