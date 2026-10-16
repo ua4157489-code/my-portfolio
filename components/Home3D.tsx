@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject, ReactNode } from "react";
 import * as THREE from "three";
 import HackerDesk from "./HackerDesk";
+import Typewriter from "./Typewriter";
+import ScrambleText from "./ScrambleText";
 
 type Shared = MutableRefObject<{ p: number; mx: number; my: number }>;
 
@@ -300,19 +302,46 @@ export default function Home3D() {
       cls: "justify-start",
       node: (
         <div className="max-w-xl">
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-black/40 px-3 py-1 text-xs text-cyan-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" /> Cybersecurity &amp; DevOps
+          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-black/40 px-3 py-1 text-xs text-cyan-300 backdrop-blur">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
+            </span>
+            Red Team &amp; Offensive Security Intern
           </p>
-          <h1 className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-500 bg-clip-text text-5xl font-bold text-transparent md:text-7xl">Umar Ali</h1>
-          <p className="mt-5 text-sm leading-relaxed text-slate-300 md:text-base">
-            I am a cybersecurity enthusiast focused on Offensive Security, Red Teaming, and Vulnerability Assessment, with a strong interest in understanding real-world security weaknesses.
+          <p className="mb-2 text-sm tracking-widest text-cyan-400/70">$ whoami</p>
+          <h1 className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-500 bg-clip-text text-6xl font-bold text-transparent drop-shadow-[0_0_28px_rgba(168,85,247,0.25)] md:text-7xl">
+            <ScrambleText text="Umar Ali" delay={300} />
+          </h1>
+          <p className="mt-4 min-h-[2rem] text-lg text-cyan-200 md:text-2xl">
+            <span className="text-cyan-500">&gt; </span>
+            <Typewriter phrases={["Breaking web apps, legally", "Red Team operations", "Vulnerability assessment", "Learning by breaking things"]} />
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/projects" className={btn}>View projects</Link>
-            <Link href="/contact" className={btn}>Get in touch</Link>
-            <a href="/resume.pdf" download className={btn}>Download CV</a>
+          <p className="mt-5 max-w-lg text-sm leading-relaxed text-slate-300 md:text-base">
+            I find and validate real weaknesses in web applications and networks, then turn them into clear, fixable reports. Working at Tkxel, and sharpening the craft in my own labs.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {["Web App Security", "Red Teaming", "Vulnerability Assessment", "OWASP Top 10", "MITRE ATT&CK"].map((k) => (
+              <span key={k} className="rounded border border-cyan-400/25 bg-cyan-400/5 px-2.5 py-1 text-xs text-cyan-200/90">
+                {k}
+              </span>
+            ))}
           </div>
-          <p className="mt-8 text-xs tracking-widest text-cyan-400/70">SCROLL TO FLY THROUGH ↓</p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Link
+              href="/projects"
+              className="group rounded bg-gradient-to-r from-cyan-400 to-violet-400 px-5 py-2.5 text-sm font-bold text-black shadow-[0_0_24px_rgba(34,211,238,0.35)] transition hover:shadow-[0_0_34px_rgba(167,139,250,0.55)]"
+            >
+              Explore my labs <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+            <Link href="/contact" className="rounded border border-cyan-400/50 bg-black/30 px-5 py-2.5 text-sm text-cyan-200 backdrop-blur transition hover:border-cyan-300 hover:bg-cyan-400/10">
+              Let&apos;s talk
+            </Link>
+            <a href="/resume.pdf" download className="rounded px-3 py-2.5 text-sm text-slate-300 underline decoration-cyan-400/40 underline-offset-4 transition hover:text-cyan-200 hover:decoration-cyan-300">
+              Download CV ↓
+            </a>
+          </div>
+          <p className="mt-9 text-xs tracking-widest text-cyan-400/60">SCROLL TO FLY THROUGH ↓</p>
         </div>
       ),
     },
