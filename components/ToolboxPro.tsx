@@ -163,7 +163,7 @@ function Card({ t, q, onOpen }: { t: Tool; q: string; onOpen: () => void }) {
   );
 }
 
-export default function ToolboxPro({ index = "05" }: { index?: string }) {
+export default function ToolboxPro() {
   const reduce = useReducedMotion();
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<Cat | "all">("all");
@@ -237,18 +237,13 @@ export default function ToolboxPro({ index = "05" }: { index?: string }) {
       : { borderColor: "rgba(255,255,255,0.12)" };
 
   return (
-    <section id="toolbox" className="relative mx-auto max-w-6xl scroll-mt-24 px-6 py-16 font-mono">
-      <p className="flex items-center gap-4 text-xs tracking-[0.3em] text-cyan-400/90">
-        <span className="h-px w-10 bg-cyan-400/60" />
-        {index} / TOOLBOX
-      </p>
-      <h2 className="mt-5 text-4xl font-bold text-white">Toolbox</h2>
-      <p className="mt-3 text-sm text-slate-400">
-        Filter by category, search by name, or click a tool for details. Press <kbd className="rounded border border-white/15 px-1.5 text-xs text-slate-300">/</kbd> to search.
+    <section id="toolbox" className="relative scroll-mt-24 font-mono">
+      <p className="text-xs text-slate-500">
+        Click a tool for details · press <kbd className="rounded border border-white/15 px-1.5 text-slate-300">/</kbd> to search
       </p>
 
       {/* controls */}
-      <div className="mt-8 flex flex-wrap items-center gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:w-72">
           <span aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">⌕</span>
           <input
