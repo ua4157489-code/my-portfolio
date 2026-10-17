@@ -8,7 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 import Spotlight from "@/components/Spotlight";
 import FX from "@/components/FX";
 import ScrollObjects from "@/components/ScrollObjects";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavbarPro";
 import CommandPalette from "@/components/CommandPalette";
 import ScrollBar from "@/components/ScrollBar";
 import BackToTop from "@/components/BackToTop";

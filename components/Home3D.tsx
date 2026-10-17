@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import NetworkWeb from "@/components/NetworkWeb";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject, ReactNode } from "react";
 import * as THREE from "three";
 import HackerDesk from "./HackerDesk";
+import LabRange from "./LabRange";
 import Typewriter from "./Typewriter";
 import ScrambleText from "./ScrambleText";
+import HeroCopy from "./HeroCopy";
+import SpaceField from "./SpaceField";
+import BrowserStation from "./BrowserStation";
+import SkillsStation from "./SkillsStation";
+import LabsStation from "./LabsStation";
 
 type Shared = MutableRefObject<{ p: number; mx: number; my: number }>;
 
@@ -36,7 +43,7 @@ function Station({ i, dir, lift = 0, bob = true, children }: { i: number; dir: n
     o.visible = a > 0.01;
     o.scale.setScalar(L.k * (0.4 + 0.6 * a));
     const b = bob ? Math.sin(state.clock.elapsedTime * 0.7 + i) * 0.12 : 0;
-    o.position.set(dir * L.side, L.y + lift + b, -i * GAP);
+    o.position.set(dir * L.side * (i === 0 && L.k === 1 ? 1.4 : 1), L.y + lift + b, -i * GAP);
   });
   return <group ref={g}>{children}</group>;
 }
@@ -48,7 +55,7 @@ function Hero({ sh }: { sh: Shared }) {
     g.current.rotation.y = THREE.MathUtils.damp(g.current.rotation.y, 0.5 + sh.current.mx * 0.3, 3, delta);
   });
   return (
-    <group ref={g} position={[0, -1.6, 0]} scale={1.2}>
+    <group ref={g} position={[0, -1.6, 0]} scale={1.05}>
       <HackerDesk x={0} z={0} floorY={0} scale={1} rotY={0} />
       <mesh rotation-x={-Math.PI / 2} position={[-0.3, 0.01, -0.2]}>
         <circleGeometry args={[2.8, 48]} />
@@ -69,14 +76,7 @@ function Globe() {
   return (
     <group>
       <group ref={a}>
-        <mesh>
-          <icosahedronGeometry args={[1.5, 2]} />
-          <meshBasicMaterial color="#22d3ee" wireframe transparent opacity={0.55} />
-        </mesh>
-        <mesh>
-          <sphereGeometry args={[1.42, 32, 32]} />
-          <meshBasicMaterial color="#04101a" />
-        </mesh>
+        <NetworkWeb radius={1.5} />
       </group>
       <group ref={b}>
         {[0, 1, 2, 3, 4, 5].map((k) => (
@@ -179,11 +179,14 @@ function Portal() {
 }
 
 /* ---------- tunnel ---------- */
-function Gates() {
+function Gates({ sh }: { sh: Shared }) {
   const grp = useRef<THREE.Group>(null!);
   useFrame((_, dt) => {
+    const f = sstep(sh.current.p, 0.003, 0.06);
+    grp.current.visible = f > 0.01;
     grp.current.children.forEach((c, k) => {
       c.rotation.z += dt * (k % 2 ? 0.1 : -0.1);
+      ((c as THREE.Mesh).material as THREE.MeshBasicMaterial).opacity = 0.14 * f;
     });
   });
   return (
@@ -198,7 +201,11 @@ function Gates() {
   );
 }
 
-function Field() {
+function Field({ sh }: { sh: Shared }) {
+  const mat = useRef<THREE.PointsMaterial>(null!);
+  useFrame(() => {
+    mat.current.opacity = 0.7 * sstep(sh.current.p, 0.003, 0.06);
+  });
   const pos = useMemo(() => {
     const a = new Float32Array(1800 * 3);
     for (let i = 0; i < 1800; i++) {
@@ -213,7 +220,7 @@ function Field() {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[pos, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.045} color="#67e8f9" transparent opacity={0.7} depthWrite={false} blending={THREE.AdditiveBlending} sizeAttenuation />
+      <pointsMaterial ref={mat} size={0.045} color="#67e8f9" transparent opacity={0.7} depthWrite={false} blending={THREE.AdditiveBlending} sizeAttenuation />
     </points>
   );
 }
@@ -299,50 +306,9 @@ export default function Home3D() {
 
   const chapters: { cls: string; node: ReactNode }[] = [
     {
-      cls: "justify-start",
+      cls: "justify-start md:pt-24",
       node: (
-        <div className="max-w-xl">
-          <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-black/40 px-3 py-1 text-xs text-cyan-300 backdrop-blur">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-            </span>
-            Red Team &amp; Offensive Security Intern
-          </p>
-          <p className="mb-2 text-sm tracking-widest text-cyan-400/70">$ whoami</p>
-          <h1 className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-500 bg-clip-text text-6xl font-bold text-transparent drop-shadow-[0_0_28px_rgba(168,85,247,0.25)] md:text-7xl">
-            <ScrambleText text="Umar Ali" delay={300} />
-          </h1>
-          <p className="mt-4 min-h-[2rem] text-lg text-cyan-200 md:text-2xl">
-            <span className="text-cyan-500">&gt; </span>
-            <Typewriter phrases={["Breaking web apps, legally", "Red Team operations", "Vulnerability assessment", "Learning by breaking things"]} />
-          </p>
-          <p className="mt-5 max-w-lg text-sm leading-relaxed text-slate-300 md:text-base">
-            I find and validate real weaknesses in web applications and networks, then turn them into clear, fixable reports. Working at Tkxel, and sharpening the craft in my own labs.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {["Web App Security", "Red Teaming", "Vulnerability Assessment", "OWASP Top 10", "MITRE ATT&CK"].map((k) => (
-              <span key={k} className="rounded border border-cyan-400/25 bg-cyan-400/5 px-2.5 py-1 text-xs text-cyan-200/90">
-                {k}
-              </span>
-            ))}
-          </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/projects"
-              className="group rounded bg-gradient-to-r from-cyan-400 to-violet-400 px-5 py-2.5 text-sm font-bold text-black shadow-[0_0_24px_rgba(34,211,238,0.35)] transition hover:shadow-[0_0_34px_rgba(167,139,250,0.55)]"
-            >
-              Explore my labs <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
-            </Link>
-            <Link href="/contact" className="rounded border border-cyan-400/50 bg-black/30 px-5 py-2.5 text-sm text-cyan-200 backdrop-blur transition hover:border-cyan-300 hover:bg-cyan-400/10">
-              Let&apos;s talk
-            </Link>
-            <a href="/resume.pdf" download className="rounded px-3 py-2.5 text-sm text-slate-300 underline decoration-cyan-400/40 underline-offset-4 transition hover:text-cyan-200 hover:decoration-cyan-300">
-              Download CV ↓
-            </a>
-          </div>
-          <p className="mt-9 text-xs tracking-widest text-cyan-400/60">SCROLL TO FLY THROUGH ↓</p>
-        </div>
+        <HeroCopy />
       ),
     },
     {
@@ -403,12 +369,12 @@ export default function Home3D() {
             <ambientLight intensity={0.9} />
             <directionalLight position={[3, 4, 5]} intensity={1} color="#cfe8ff" />
             <Rig sh={sh} />
-            <Field />
-            <Gates />
+            <SpaceField sh={sh} />
+            <Gates sh={sh} />
             <Station i={0} dir={1} bob={false}><Hero sh={sh} /></Station>
-            <Station i={1} dir={-1}><Globe /></Station>
-            <Station i={2} dir={1}><Lattice /></Station>
-            <Station i={3} dir={-1}><Knot /></Station>
+            <Station i={1} dir={-1}><BrowserStation sh={sh} /></Station>
+            <Station i={2} dir={1}><SkillsStation sh={sh} /></Station>
+            <Station i={3} dir={-1}><LabRange /></Station>
             <Station i={4} dir={0} lift={0.9}><Portal /></Station>
           </Canvas>
         </div>
