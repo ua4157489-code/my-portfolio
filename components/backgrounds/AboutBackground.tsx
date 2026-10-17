@@ -1,150 +1,208 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { Stage } from "./shared";
 
-const COUNT = 70;
-const LINK_DIST = 2.2;
-const BOUNDS = new THREE.Vector3(9, 5, 3);
-const MAX_SEGMENTS = (COUNT * (COUNT - 1)) / 2;
+/* A calm, cinematic backdrop for the whole About page:
+   a night sky (stars + slow aurora) over a glowing data landscape.
+   Scrolling the page flies you forward over the terrain and slowly shifts the colours. */
 
-function Network() {
-  const group = useRef<THREE.Group>(null);
-  const points = useRef<THREE.Points>(null);
-  const lines = useRef<THREE.LineSegments>(null);
-  const ring = useRef<THREE.Mesh>(null);
-  const mouse = useRef({ x: 0, y: 0 });
-  const reduce = useRef(false);
+const TERRAIN_VERT = /* glsl */ `
+  uniform float uT; uniform float uScroll;
+  varying vec3 vW; varying float vH; varying float vD;
+  float hgt(vec2 p, float t){
+    float a = smoothstep(2.5, 14.0, abs(p.x));
+    float h = sin(p.x * 0.23 + t * 0.25) * cos(p.y * 0.19 - t * 0.18) * 1.6
+            + sin(p.x * 0.55 + p.y * 0.41 + t * 0.4) * 0.45
+            + sin(p.y * 0.8 - t * 0.5) * 0.12;
+    return h * a * 1.3;
+  }
+  void main(){
+    vec3 p = position;
+    vec2 w = vec2(p.x, p.z - uScroll);
+    p.y += hgt(w, uT);
+    vW = vec3(w.x, 0.0, w.y);
+    vH = p.y;
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    vD = -mv.z;
+    gl_Position = projectionMatrix * mv;
+  }`;
+const TERRAIN_FRAG = /* glsl */ `
+  uniform vec3 uA; uniform vec3 uB; uniform float uGain;
+  varying vec3 vW; varying float vH; varying float vD;
+  void main(){
+    vec2 c = vW.xz / 1.2;
+    vec2 g = abs(fract(c - 0.5) - 0.5) / fwidth(c);
+    float line = 1.0 - min(min(g.x, g.y), 1.0);
+    float fade = (1.0 - smoothstep(12.0, 44.0, vD)) * smoothstep(1.5, 5.0, vD);
+    vec3 col = mix(uA, uB, clamp(vH * 0.35 + 0.5, 0.0, 1.0));
+    float a = (line * 0.75 + 0.03) * fade * uGain;
+    gl_FragColor = vec4(col * (0.6 + vH * 0.12), a);
+  }`;
 
-  const { positions, velocities } = useMemo(() => {
-    const positions = new Float32Array(COUNT * 3);
-    const velocities = new Float32Array(COUNT * 3);
-    for (let i = 0; i < COUNT; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * BOUNDS.x * 2;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * BOUNDS.y * 2;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * BOUNDS.z * 2;
-      velocities[i * 3] = (Math.random() - 0.5) * 0.4;
-      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.4;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.2;
+const AURORA_VERT = /* glsl */ `
+  uniform float uT; uniform float uPh;
+  varying vec2 vUv;
+  void main(){
+    vUv = uv;
+    vec3 p = position;
+    p.y += sin(p.x * 0.2 + uT * 0.4 + uPh) * 1.2;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+  }`;
+const AURORA_FRAG = /* glsl */ `
+  uniform float uT; uniform float uPh; uniform vec3 uA; uniform vec3 uB; uniform float uAlpha;
+  varying vec2 vUv;
+  void main(){
+    float v = vUv.y;
+    float edge = pow(1.0 - v, 1.6) * smoothstep(0.0, 0.08, v);
+    float wave = 0.55 + 0.45 * sin(vUv.x * 10.0 + uT * 0.6 + uPh);
+    float side = smoothstep(0.0, 0.2, vUv.x) * smoothstep(1.0, 0.8, vUv.x);
+    vec3 col = mix(uA, uB, vUv.x);
+    gl_FragColor = vec4(col, edge * wave * side * uAlpha);
+  }`;
+const HAZE_VERT = /* glsl */ `
+  varying vec2 vUv;
+  void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+const HAZE_FRAG = /* glsl */ `
+  uniform vec3 uA; uniform vec3 uB;
+  varying vec2 vUv;
+  void main(){
+    float d = vUv.y - 0.5;
+    float band = exp(-pow(d * 6.0, 2.0));
+    float wide = exp(-pow(d * 2.2, 2.0)) * 0.35;
+    vec3 col = mix(uB, uA, smoothstep(0.0, 1.0, vUv.x));
+    gl_FragColor = vec4(col, (band * 0.32 + wide * 0.14));
+  }`;
+
+// colour story as you scroll: cyan/violet -> violet/magenta -> green/cyan
+const PAL = [
+  [new THREE.Color("#22d3ee"), new THREE.Color("#a78bfa")],
+  [new THREE.Color("#a78bfa"), new THREE.Color("#e879f9")],
+  [new THREE.Color("#34d399"), new THREE.Color("#22d3ee")],
+];
+
+function Scene() {
+  const stars = useRef<THREE.Group>(null!);
+  const aur = useRef<THREE.Group>(null!);
+  const cA = useMemo(() => new THREE.Color(), []);
+  const cB = useMemo(() => new THREE.Color(), []);
+  const sc = useRef(0);
+  const ptr = useRef({ x: 0, y: 0 });
+
+  const terrainGeo = useMemo(() => {
+    const g = new THREE.PlaneGeometry(60, 70, 150, 160);
+    g.rotateX(-Math.PI / 2);
+    return g;
+  }, []);
+  const uTerrain = useMemo(() => ({ uT: { value: 0 }, uScroll: { value: 0 }, uA: { value: new THREE.Color() }, uB: { value: new THREE.Color() }, uGain: { value: 1 } }), []);
+  const uHaze = useMemo(() => ({ uA: { value: new THREE.Color() }, uB: { value: new THREE.Color() } }), []);
+  const uAur = useMemo(
+    () => [0, 2.1, 4.2].map((ph) => ({ uT: { value: 0 }, uPh: { value: ph }, uA: { value: new THREE.Color() }, uB: { value: new THREE.Color() }, uAlpha: { value: 0.16 } })),
+    []
+  );
+  const starPos = useMemo(() => {
+    const N = 1700, a = new Float32Array(N * 3);
+    let s = 3;
+    const r = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+    for (let i = 0; i < N; i++) {
+      const th = r() * Math.PI * 2, ph = Math.acos(1 - r() * 1.05); // upper hemisphere
+      a[i * 3] = 70 * Math.sin(ph) * Math.cos(th);
+      a[i * 3 + 1] = 70 * Math.cos(ph) - 2;
+      a[i * 3 + 2] = 70 * Math.sin(ph) * Math.sin(th) - 20;
     }
-    return { positions, velocities };
+    return a;
   }, []);
 
-  const linePositions = useMemo(() => new Float32Array(MAX_SEGMENTS * 6), []);
+  useFrame((state, dt) => {
+    const t = state.clock.elapsedTime;
+    const el = document.documentElement;
+    const max = Math.max(1, el.scrollHeight - window.innerHeight);
+    const target = Math.min(1, Math.max(0, window.scrollY / max));
+    sc.current = THREE.MathUtils.damp(sc.current, target, 4, dt);
+    const p = sc.current;
 
-  useEffect(() => {
-    reduce.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const onMove = (e: PointerEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
-    };
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
-  }, []);
+    // palette along the page
+    const f = p * (PAL.length - 1), i0 = Math.min(PAL.length - 2, Math.floor(f)), k = f - i0;
+    cA.copy(PAL[i0][0]).lerp(PAL[i0 + 1][0], k);
+    cB.copy(PAL[i0][1]).lerp(PAL[i0 + 1][1], k);
+    uTerrain.uA.value.copy(cA);
+    uTerrain.uB.value.copy(cB);
+    uHaze.uA.value.copy(cA);
+    uHaze.uB.value.copy(cB);
+    uAur.forEach((u, i) => {
+      u.uA.value.copy(i % 2 ? cB : cA);
+      u.uB.value.copy(i % 2 ? cA : cB);
+    });
 
-  useFrame((state, delta) => {
-    const dt = Math.min(delta, 0.05);
-    const speed = reduce.current ? 0 : 1;
+    uTerrain.uT.value = t;
+    uTerrain.uScroll.value = p * 70 + t * 0.6; // always drifting, scroll flies you forward
+    uAur.forEach((u) => (u.uT.value = t));
+    stars.current.rotation.y = t * 0.004 + p * 0.5;
 
-    // move nodes, bounce at the edges
-    for (let i = 0; i < COUNT; i++) {
-      for (let k = 0; k < 3; k++) {
-        const idx = i * 3 + k;
-        positions[idx] += velocities[idx] * dt * speed;
-        const limit = k === 0 ? BOUNDS.x : k === 1 ? BOUNDS.y : BOUNDS.z;
-        if (Math.abs(positions[idx]) > limit) velocities[idx] *= -1;
-      }
-    }
-
-    // link nearby nodes
-    let n = 0;
-    for (let i = 0; i < COUNT; i++) {
-      for (let j = i + 1; j < COUNT; j++) {
-        const dx = positions[i * 3] - positions[j * 3];
-        const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-        const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
-        if (dx * dx + dy * dy + dz * dz < LINK_DIST * LINK_DIST) {
-          linePositions.set(
-            [
-              positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
-              positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2],
-            ],
-            n * 6
-          );
-          n++;
-        }
-      }
-    }
-
-    if (points.current) {
-      points.current.geometry.attributes.position.needsUpdate = true;
-    }
-    if (lines.current) {
-      lines.current.geometry.attributes.position.needsUpdate = true;
-      lines.current.geometry.setDrawRange(0, n * 2);
-    }
-
-    // mouse parallax
-    if (group.current) {
-      group.current.rotation.y += (mouse.current.x * 0.25 - group.current.rotation.y) * 0.03;
-      group.current.rotation.x += (-mouse.current.y * 0.15 - group.current.rotation.x) * 0.03;
-    }
-
-    // scan ring: expands and fades, then repeats
-    if (ring.current) {
-      const t = (state.clock.elapsedTime % 6) / 6;
-      const s = 0.5 + t * 9;
-      ring.current.scale.set(s, s, s);
-      (ring.current.material as THREE.MeshBasicMaterial).opacity = (1 - t) * 0.35;
-    }
+    // gentle camera parallax
+    const cam = state.camera;
+    const dm = THREE.MathUtils.damp;
+    cam.position.x = dm(cam.position.x, ptr.current.x * 0.9, 2.5, dt);
+    cam.position.y = dm(cam.position.y, 0.2 + ptr.current.y * 0.35 + p * 0.5, 2.5, dt);
+    cam.position.z = 4;
+    cam.lookAt(0, 1.2, -20);
   });
 
+  // pointer (window-level so it works under the page content)
+  useMemo(() => {
+    if (typeof window === "undefined") return;
+    window.addEventListener(
+      "pointermove",
+      (e) => {
+        ptr.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+        ptr.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
+      },
+      { passive: true }
+    );
+  }, []);
+
   return (
-    <group ref={group}>
-      <points ref={points}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[positions, 3]}
-            usage={THREE.DynamicDrawUsage}
-          />
-        </bufferGeometry>
-        <pointsMaterial size={0.07} color="#38bdf8" transparent opacity={0.9} sizeAttenuation />
-      </points>
-
-      <lineSegments ref={lines}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[linePositions, 3]}
-            usage={THREE.DynamicDrawUsage}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#38bdf8" transparent opacity={0.18} />
-      </lineSegments>
-
-      <mesh ref={ring} rotation={[Math.PI / 2.6, 0, 0]}>
-        <ringGeometry args={[0.98, 1, 128]} />
-        <meshBasicMaterial color="#22d3ee" transparent opacity={0.3} side={THREE.DoubleSide} />
+    <>
+      {/* horizon haze */}
+      <mesh position={[0, 0, -46]}>
+        <planeGeometry args={[140, 60]} />
+        <shaderMaterial vertexShader={HAZE_VERT} fragmentShader={HAZE_FRAG} uniforms={uHaze} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
       </mesh>
-    </group>
+
+      {/* stars */}
+      <group ref={stars}>
+        <points frustumCulled={false}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[starPos, 3]} />
+          </bufferGeometry>
+          <pointsMaterial size={0.16} color="#cfe6ff" transparent opacity={0.8} depthWrite={false} blending={THREE.AdditiveBlending} sizeAttenuation />
+        </points>
+      </group>
+
+      {/* aurora ribbons */}
+      <group ref={aur}>
+        {uAur.map((u, i) => (
+          <mesh key={i} position={[(i - 1) * 9, 7 + i * 2.2, -30 - i * 4]} rotation={[0.1, (i - 1) * 0.25, (i - 1) * 0.05]}>
+            <planeGeometry args={[44, 7, 60, 1]} />
+            <shaderMaterial vertexShader={AURORA_VERT} fragmentShader={AURORA_FRAG} uniforms={u} transparent depthWrite={false} blending={THREE.AdditiveBlending} side={THREE.DoubleSide} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* data landscape */}
+      <mesh geometry={terrainGeo} position={[0, -3.4, -20]} frustumCulled={false}>
+        <shaderMaterial vertexShader={TERRAIN_VERT} fragmentShader={TERRAIN_FRAG} uniforms={uTerrain} transparent depthWrite={false} blending={THREE.AdditiveBlending} />
+      </mesh>
+    </>
   );
 }
 
 export default function AboutBackground() {
   return (
-    <div
-      aria-hidden
-      style={{ position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none" }}
-    >
-      <Canvas
-        camera={{ position: [0, 0, 9], fov: 60 }}
-        dpr={[1, 2]}
-        gl={{ alpha: true, antialias: true }}
-      >
-        <Network />
-      </Canvas>
-    </div>
+    <Stage camera={[0, 0.2, 4]}>
+      <Scene />
+    </Stage>
   );
 }

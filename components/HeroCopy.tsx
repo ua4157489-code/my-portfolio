@@ -97,7 +97,7 @@ function Chip({ s, i, active, onSelect }: { s: (typeof SKILLS)[number]; i: numbe
         type="button"
         aria-pressed={active}
         onClick={onSelect}
-        ref={ref}
+        ref={ref as never}
         onPointerMove={(e) => {
           const r = ref.current!.getBoundingClientRect();
           ref.current!.style.setProperty("--x", `${e.clientX - r.left}px`);

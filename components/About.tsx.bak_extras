@@ -1,0 +1,144 @@
+import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import ScrollWords from "@/components/ScrollWords";
+import AboutViz from "@/components/AboutViz";
+import SplitSection from "@/components/SplitSection";
+import {
+  AboutTerminal,
+  Block,
+  CountStats,
+  FocusGrid,
+  ProfileCard,
+  StoryTabs,
+  ToolsExplorer,
+} from "@/components/AboutParts";
+import { ABOUT, CORE_AREAS, NAME } from "@/data/content";
+
+const KEYWORDS = ["Offensive Security", "Red Teaming", "Vulnerability Assessment"];
+const LABELS = ["Experience", "Currently", "Interests", "Goals"];
+
+const TOOLS = [
+  { name: "Nmap", cat: "Offensive" },
+  { name: "Burp Suite", cat: "Offensive" },
+  { name: "OWASP ZAP", cat: "Offensive" },
+  { name: "Metasploit", cat: "Offensive" },
+  { name: "Wireshark", cat: "Network & SOC" },
+  { name: "Wazuh", cat: "Network & SOC" },
+  { name: "Linux", cat: "Dev & Infra" },
+  { name: "Python", cat: "Dev & Infra" },
+  { name: "Docker", cat: "Dev & Infra" },
+  { name: "Git/GitHub", cat: "Dev & Infra" },
+];
+
+export default function About() {
+  const [lead, ...rest] = ABOUT;
+
+  const story = rest.slice(0, LABELS.length).map((text, i) => ({ label: LABELS[i], text }));
+
+  const commands = [
+    {
+      cmd: "whoami",
+      out: [
+        NAME,
+        "Cybersecurity enthusiast / Red Team Intern at Tkxel",
+        "Diploma in Cloud Cyber Security, Al Nafi International College",
+      ],
+    },
+    { cmd: "focus", out: KEYWORDS.map((k) => `-> ${k}`) },
+    { cmd: "stack", out: [TOOLS.map((t) => t.name).join(" / ")] },
+    { cmd: "practice", out: ["-> TryHackMe", "-> Hack The Box"] },
+    { cmd: "goals", out: [rest[3] ?? "Learning from experienced security professionals."] },
+    {
+      cmd: "contact",
+      out: [
+        "email    ua4157489@gmail.com",
+        "github   github.com/ua4157489-code",
+        "linkedin linkedin.com/in/umar-ali-ba935031b",
+      ],
+    },
+  ];
+
+  return (
+    <SplitSection
+      id="about"
+      aside={
+        <ProfileCard
+          src="/me.png"
+          name={NAME}
+          role="Red Team Intern / Tkxel"
+          lines={["Offensive Security", "Red Teaming", "Vulnerability Assessment"]}
+        />
+      }
+    >
+      <div className="space-y-28">
+        {/* 1. the main statement: words light up as you scroll */}
+        <ScrollWords
+          text={lead}
+          keywords={KEYWORDS}
+          className="text-3xl font-semibold leading-snug tracking-tight md:text-4xl lg:text-[2.6rem]"
+        />
+
+        {/* 2. numbers that count up */}
+        <Reveal>
+          <CountStats
+            items={[
+              { label: "Focus areas", value: CORE_AREAS.length },
+              { label: "Tools in daily use", value: TOOLS.length },
+              { label: "Core disciplines", value: KEYWORDS.length },
+              { label: "Practice platforms", value: 2 },
+            ]}
+          />
+        </Reveal>
+
+        {/* 3. interactive terminal */}
+        <Block
+          no="01"
+          title="whoami"
+          hint="A tiny terminal. Click a command, or type one (try help). Arrow keys bring back your history."
+        >
+          <AboutTerminal commands={commands} />
+        </Block>
+
+        {/* 4. the story as tabs */}
+        <Block no="02" title="My story" hint="Switch tabs, or use the arrow keys. It also plays on its own until you click.">
+          <StoryTabs items={story} />
+        </Block>
+
+        {/* 5. focus areas */}
+        <Block no="03" title="What I focus on" hint="Hover a card: it follows your cursor and tilts.">
+          <FocusGrid areas={CORE_AREAS} />
+        </Block>
+
+        {/* 6. charts built from the real skills data */}
+        <Block no="04" title="Skills at a glance">
+          <AboutViz />
+        </Block>
+
+        {/* 7. tools explorer */}
+        <Block no="05" title="Toolbox" hint="Filter by category or search by name.">
+          <ToolsExplorer tools={TOOLS} />
+        </Block>
+
+        {/* 8. call to action */}
+        <Reveal>
+          <div className="ab-card ab-cta">
+            <div className="relative">
+              <h3 className="text-2xl font-bold text-white">Got a lab, a bug or a question?</h3>
+              <p className="mt-2 max-w-md text-slate-300">
+                I like talking about red teaming, web security and how things break. Say hello.
+              </p>
+            </div>
+            <div className="relative flex flex-wrap gap-3">
+              <Link href="/contact" className="ab-btn ab-btn-solid">
+                Get in touch
+              </Link>
+              <a href="/resume.pdf" download className="ab-btn">
+                Download CV
+              </a>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </SplitSection>
+  );
+}

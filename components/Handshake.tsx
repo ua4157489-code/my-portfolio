@@ -1,0 +1,412 @@
+"use client";
+
+import { useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
+
+// Two hands made of glowing particles fly in from both sides, clasp in the middle with a burst of
+// sparks and a shock ring, shake, stay joined while energy pulses run along both arms, then dissolve
+// and do it again. The shape is drawn on a hidden canvas and turned into a 3D cloud of points,
+// so it is not an image: it has depth, and it leans toward the mouse.
+//
+// Use it inside a react-three-fiber <Canvas>:   <Handshake size={1} />
+type Props = { size?: number; opacity?: number };
+
+const CW = 1024;
+const CH = 512;
+const SX = 4.4 / CW; // canvas pixel -> world units (the whole shape is 4.4 units wide)
+const toX = (px: number) => (px - CW / 2) * SX;
+const toY = (py: number) => -(py - CH / 2) * SX;
+
+function rngOf(a: number) {
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ───────── the handshake shape, drawn on a canvas ───────── */
+function drawHandshake(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, CW, CH);
+  ctx.lineCap = "round";
+  // every part is a thick round-ended line, with a black outline so neighbouring fingers stay separate
+  const cap = (x1: number, y1: number, x2: number, y2: number, w: number, color: string) => {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = w + 18;
+    ctx.stroke();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = w;
+    ctx.stroke();
+  };
+  const R = "rgb(40,120,255)"; // right person
+  const L = "rgb(255,60,40)"; // left person
+  const S = "rgb(60,255,120)"; // sleeves
+  // right person: arm, sleeve, palm
+  cap(1010, 338, 610, 268, 128, R);
+  cap(1010, 340, 900, 320, 150, S);
+  cap(600, 268, 520, 256, 122, R);
+  // left person: arm, sleeve, palm
+  cap(14, 338, 414, 268, 128, L);
+  cap(14, 340, 124, 320, 150, S);
+  cap(404, 268, 480, 256, 122, L);
+  // left fingers wrapping over the right hand
+  for (let i = 0; i < 4; i++) cap(486, 222 + i * 28, 590, 246 + i * 32, 30, L);
+  // thumbs on top
+  cap(440, 214, 540, 176, 32, L);
+  cap(600, 222, 528, 196, 30, R);
+}
+
+// turn the drawing into a cloud of points: fill, edge, layer and "roundness" for each one
+function buildCloud(n: number) {
+  const r = rngOf(17);
+  const cv = document.createElement("canvas");
+  cv.width = CW;
+  cv.height = CH;
+  const ctx = cv.getContext("2d", { willReadFrequently: true })!;
+  drawHandshake(ctx);
+  const data = ctx.getImageData(0, 0, CW, CH).data;
+  const fill: number[] = [];
+  const edge: number[] = [];
+  const layerOf = new Uint8Array(CW * CH);
+  const mask = new Uint8Array(CW * CH);
+  const lum = (x: number, y: number) => {
+    const i = (y * CW + x) * 4;
+    return Math.max(data[i], data[i + 1], data[i + 2]);
+  };
+  for (let y = 4; y < CH - 4; y++) {
+    for (let x = 4; x < CW - 4; x++) {
+      const i = (y * CW + x) * 4;
+      const rr = data[i], gg = data[i + 1], bb = data[i + 2];
+      if (Math.max(rr, gg, bb) < 120) continue;
+      const id = y * CW + x;
+      mask[id] = 1;
+      layerOf[id] = gg > rr && gg > bb ? 2 : rr > bb ? 0 : 1;
+      if (lum(x - 3, y) < 60 || lum(x + 3, y) < 60 || lum(x, y - 3) < 60 || lum(x, y + 3) < 60) edge.push(id);
+      else fill.push(id);
+    }
+  }
+  // distance from every inside pixel to the nearest edge (two quick passes)
+  const dist = new Float32Array(CW * CH);
+  for (let i = 0; i < dist.length; i++) dist[i] = mask[i] ? 1e9 : 0;
+  for (let y = 1; y < CH; y++) {
+    for (let x = 1; x < CW - 1; x++) {
+      const i = y * CW + x;
+      if (dist[i] === 0) continue;
+      dist[i] = Math.min(dist[i], dist[i - 1] + 1, dist[i - CW] + 1, dist[i - CW - 1] + 1.414, dist[i - CW + 1] + 1.414);
+    }
+  }
+  for (let y = CH - 2; y >= 0; y--) {
+    for (let x = CW - 2; x >= 1; x--) {
+      const i = y * CW + x;
+      if (dist[i] === 0) continue;
+      dist[i] = Math.min(dist[i], dist[i + 1] + 1, dist[i + CW] + 1, dist[i + CW + 1] + 1.414, dist[i + CW - 1] + 1.414);
+    }
+  }
+  const pos = new Float32Array(n * 3);
+  const start = new Float32Array(n * 3);
+  const rnd = new Float32Array(n * 3);
+  const layer = new Float32Array(n);
+  const isEdge = new Float32Array(n);
+  for (let k = 0; k < n; k++) {
+    const e = r() < 0.32 && edge.length > 0;
+    const list = e || fill.length === 0 ? edge : fill;
+    const id = list[Math.floor(r() * list.length)];
+    const px = (id % CW) + r() - 0.5;
+    const py = Math.floor(id / CW) + r() - 0.5;
+    const ly = layerOf[id];
+    const side = px < CW / 2 ? -1 : 1;
+    // depth: the left hand sits in front of the right one, and every part is rounded like a tube:
+    // points near the edge stay in the middle, points deeper inside bulge to the front or the back
+    const dn = Math.min(dist[id], 55) / 55;
+    const dome = Math.sqrt(Math.max(0, 1 - (1 - dn) * (1 - dn)));
+    const base = ly === 0 ? 0.12 : ly === 1 ? -0.12 : side < 0 ? 0.05 : -0.05;
+    const z = base + (r() < 0.5 ? -1 : 1) * dome * 0.2 + (r() - 0.5) * 0.03;
+    pos.set([toX(px), toY(py), z], k * 3);
+    start.set([side * (3.2 + r() * 2.5), (r() - 0.5) * 3.5, (r() - 0.5) * 3], k * 3);
+    rnd.set([r(), r(), r()], k * 3);
+    layer[k] = ly;
+    isEdge[k] = e ? 1 : 0;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute("aSt", new THREE.BufferAttribute(start, 3));
+  geo.setAttribute("aR", new THREE.BufferAttribute(rnd, 3));
+  geo.setAttribute("aL", new THREE.BufferAttribute(layer, 1));
+  geo.setAttribute("aE", new THREE.BufferAttribute(isEdge, 1));
+  return geo;
+}
+
+/* ───────── shaders ───────── */
+const VERT = /* glsl */ `
+  attribute vec3 aSt; attribute vec3 aR; attribute float aL; attribute float aE;
+  uniform float uP; uniform float uT; uniform float uShake; uniform float uOp; uniform float uPulse; uniform float uScanY;
+  uniform float uScale; uniform float uPix; uniform float uRad;
+  varying vec3 vCol; varying float vA;
+  void main(){
+    // each particle sets off a little later than its neighbours, so the hands pour in
+    float pr = smoothstep(aR.x * 0.45, 0.55 + aR.x * 0.45, uP);
+    float e = 1.0 - pow(1.0 - pr, 3.0);
+    vec3 p = mix(aSt, position, e);
+    float arc = sin(pr * 3.14159265);
+    p += vec3(sin(uT * 1.3 + aR.y * 6.2831), cos(uT * 1.1 + aR.z * 6.2831), sin(uT * 0.9 + aR.x * 6.2831)) * arc * 0.9;
+    p += vec3(sin(uT * 1.2 + aR.y * 40.0), cos(uT * 1.0 + aR.z * 40.0), sin(uT * 1.4 + aR.x * 40.0)) * 0.006 * e;
+    // the shake: the hands and forearms move up and down together, the far ends stay put
+    float xx = position.x / 1.1;
+    float infl = exp(-xx * xx);
+    p.y += sin(uT * 10.0) * 0.06 * infl * uShake;
+    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * mv;
+    vec3 cL = vec3(0.2, 0.85, 1.0);
+    vec3 cR = vec3(0.72, 0.55, 1.0);
+    vec3 cS = vec3(0.7, 0.95, 1.0);
+    vec3 col = aL < 0.5 ? cL : (aL < 1.5 ? cR : cS);
+    col *= 0.75 + aE * 0.6;
+    col += uPulse * infl * vec3(0.6, 0.35, 0.45);
+    float sd = (p.y - uScanY) * 5.0;
+    float band = exp(-sd * sd) * smoothstep(0.6, 1.0, uP);
+    col += band * vec3(0.7, 0.9, 1.0);
+    vCol = col;
+    float fe = 1.0 - smoothstep(0.9, 2.2, abs(position.x));
+    vA = uOp * (0.55 + 0.45 * aE) * (0.35 + 0.65 * smoothstep(0.0, 0.25, pr)) * mix(0.12, 1.0, fe);
+    float size = (0.017 + aE * 0.009) * uRad * (1.0 + uPulse * 0.5 * infl + band * 0.6);
+    gl_PointSize = clamp(size * uScale / -mv.z, 1.0 * uPix, 12.0 * uPix);
+  }`;
+const FRAG = /* glsl */ `
+  varying vec3 vCol; varying float vA;
+  void main(){
+    float d = length(gl_PointCoord - 0.5);
+    if (d > 0.5) discard;
+    float a = exp(-d * d * 20.0);
+    gl_FragColor = vec4(vCol, a * vA);
+  }`;
+
+function glowTexture() {
+  const S = 128;
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = S;
+  const ctx = cv.getContext("2d")!;
+  const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+  g.addColorStop(0, "rgba(230,252,255,1)");
+  g.addColorStop(0.3, "rgba(90,210,255,0.35)");
+  g.addColorStop(1, "rgba(40,120,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, S, S);
+  return new THREE.CanvasTexture(cv);
+}
+function ringTexture() {
+  const S = 256;
+  const cv = document.createElement("canvas");
+  cv.width = cv.height = S;
+  const ctx = cv.getContext("2d")!;
+  ctx.strokeStyle = "rgba(180,245,255,1)";
+  ctx.lineWidth = 6;
+  ctx.shadowColor = "rgba(80,220,255,1)";
+  ctx.shadowBlur = 14;
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, S / 2 - 22, 0, Math.PI * 2);
+  ctx.stroke();
+  return new THREE.CanvasTexture(cv);
+}
+
+const ease = (x: number) => x * x * (3 - 2 * x);
+const CYCLE = 13.5;
+const CLASP = 2.6; // moment of the handshake, in seconds into the cycle
+
+export default function Handshake({ size = 1, opacity = 1 }: Props) {
+  const group = useRef<THREE.Group>(null!);
+  const glow = useRef<THREE.Sprite>(null!);
+  const shock = useRef<THREE.Sprite>(null!);
+  const ringsRef = useRef<THREE.Group>(null!);
+  const time = useRef(0);
+  const last = useRef(0);
+  const burst = useRef({ t0: -99 });
+
+  const mobile = useMemo(() => (typeof window !== "undefined" ? window.innerWidth < 768 : false), []);
+  const geo = useMemo(() => buildCloud(mobile ? 8000 : 14000), [mobile]);
+
+  const uniforms = useMemo(
+    () => ({
+      uP: { value: 0 },
+      uT: { value: 0 },
+      uShake: { value: 0 },
+      uOp: { value: opacity },
+      uPulse: { value: 0 },
+      uScanY: { value: 0 },
+      uScale: { value: 1000 },
+      uPix: { value: 1 },
+      uRad: { value: size },
+    }),
+    [opacity, size]
+  );
+  const mat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: VERT,
+        fragmentShader: FRAG,
+        uniforms,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    [uniforms]
+  );
+
+  // sparks that fly out when the hands meet
+  const sparks = useMemo(() => {
+    const N = 160, r = rngOf(5);
+    const dir = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const a = r() * Math.PI * 2;
+      const b = Math.acos(2 * r() - 1);
+      const sp = 0.8 + r() * 1.6;
+      dir.set([Math.sin(b) * Math.cos(a) * sp, Math.cos(b) * sp, Math.sin(b) * Math.sin(a) * sp], i * 3);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+    const m = new THREE.PointsMaterial({ color: "#d8fbff", size: 0.05 * size, transparent: true, opacity: 0, sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending });
+    return { N, dir, g, points: new THREE.Points(g, m), m };
+  }, [size]);
+
+  // two rings turning around the clasp, and energy pulses running along the arms
+  const rings = useMemo(
+    () =>
+      [
+        { r: 1.15, tx: 1.1, tz: 0.3, sp: 0.6 },
+        { r: 1.45, tx: -0.5, tz: -0.8, sp: -0.4 },
+      ].map((c) => {
+        const pts: THREE.Vector3[] = [];
+        for (let i = 0; i <= 128; i++) {
+          const a = (i / 128) * Math.PI * 2;
+          pts.push(new THREE.Vector3(Math.cos(a) * c.r, 0, Math.sin(a) * c.r));
+        }
+        const m = new THREE.LineBasicMaterial({ color: "#8be9ff", transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+        const g = new THREE.Group();
+        g.rotation.set(c.tx, 0, c.tz);
+        g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), m));
+        return { ...c, g, m };
+      }),
+    []
+  );
+  const pulses = useMemo(() => {
+    const mk = (color: string) => {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.BufferAttribute(new Float32Array(7 * 3), 3));
+      const m = new THREE.PointsMaterial({ color, size: 0.07 * size, transparent: true, opacity: 0, sizeAttenuation: true, depthWrite: false, blending: THREE.AdditiveBlending });
+      return { g, m, points: new THREE.Points(g, m) };
+    };
+    return { left: mk("#6fe3ff"), right: mk("#c4a8ff") };
+  }, [size]);
+
+  const glowTex = useMemo(() => glowTexture(), []);
+  const ringTex = useMemo(() => ringTexture(), []);
+
+  useFrame((state, dt) => {
+    const calm = document.documentElement.dataset.motion === "calm";
+    if (!calm) time.current += dt;
+    const t = time.current;
+    const c = t % CYCLE;
+    const pix = state.gl.getPixelRatio();
+    const cam = state.camera as THREE.PerspectiveCamera;
+    const fov = typeof cam.fov === "number" ? cam.fov : 50;
+
+    // the story: fly in, clasp, shake, hold, dissolve, rest
+    let p = 1;
+    if (!calm) {
+      if (c < CLASP) p = ease(c / CLASP);
+      else if (c < 11.5) p = 1;
+      else if (c < 13.0) p = 1 - ease((c - 11.5) / 1.5);
+      else p = 0;
+    }
+    const shake = calm ? 0 : ease(clamp01((c - 2.45) / 0.4)) * (1 - ease(clamp01((c - 4.6) / 0.6)));
+    const flash = calm ? 0 : Math.exp(-(((c - CLASP) / 0.35) ** 2));
+
+    if (!calm && last.current < CLASP - 0.05 && c >= CLASP - 0.05) burst.current.t0 = t;
+    last.current = c;
+
+    uniforms.uP.value = p;
+    uniforms.uT.value = t;
+    uniforms.uShake.value = shake;
+    uniforms.uPulse.value = flash;
+    uniforms.uScanY.value = Math.sin(t * 0.9) * 0.75;
+    uniforms.uScale.value = (state.size.height * pix) / (2 * Math.tan(THREE.MathUtils.degToRad(fov) / 2));
+    uniforms.uPix.value = pix;
+
+    const g = group.current;
+    g.scale.setScalar(size * (1 + flash * 0.03));
+    g.rotation.set(state.pointer.y * 0.18, state.pointer.x * 0.3 + Math.sin(t * 0.5) * 0.28, 0);
+
+    // sparks
+    const age = t - burst.current.t0;
+    if (age >= 0 && age < 1.2) {
+      const a = sparks.g.attributes.position as THREE.BufferAttribute;
+      for (let i = 0; i < sparks.N; i++) {
+        a.setXYZ(i, sparks.dir[i * 3] * age, sparks.dir[i * 3 + 1] * age - 0.6 * age * age, sparks.dir[i * 3 + 2] * age);
+      }
+      a.needsUpdate = true;
+      sparks.m.opacity = (1 - age / 1.2) * opacity;
+    } else sparks.m.opacity = 0;
+
+    // glow and shock ring at the clasp
+    const gs = 0.9 + flash * 1.4 + 0.1 * Math.sin(t * 2);
+    glow.current.scale.set(gs, gs, 1);
+    (glow.current.material as THREE.SpriteMaterial).opacity = (0.2 * p + flash * 0.6) * opacity;
+    const sa = age >= 0 && age < 1.3 ? age / 1.3 : 1;
+    const ss = 0.4 + sa * 3.2;
+    shock.current.scale.set(ss, ss, 1);
+    (shock.current.material as THREE.SpriteMaterial).opacity = sa < 1 ? (1 - sa) * 0.7 * opacity : 0;
+
+    // rings and arm pulses show up once the hands have joined
+    const joined = p * p * p;
+    rings.forEach((rg) => {
+      rg.m.opacity = 0.35 * joined * opacity;
+      rg.g.rotation.y = t * rg.sp;
+    });
+    const along = (arr: THREE.BufferAttribute, x0: number, y0: number, x1: number, y1: number) => {
+      for (let k = 0; k < 7; k++) {
+        const u = (t * 0.35 + k / 7) % 1;
+        arr.setXYZ(k, toX(x0 + (x1 - x0) * u), toY(y0 + (y1 - y0) * u), 0.05);
+      }
+      arr.needsUpdate = true;
+    };
+    along(pulses.left.g.attributes.position as THREE.BufferAttribute, 14, 338, 414, 268);
+    along(pulses.right.g.attributes.position as THREE.BufferAttribute, 1010, 338, 610, 268);
+    pulses.left.m.opacity = 0.9 * joined * opacity;
+    pulses.right.m.opacity = 0.9 * joined * opacity;
+  });
+
+  return (
+    <group ref={group}>
+      <sprite ref={glow} position={[toX(520), 0, 0.1]} scale={[0.9, 0.9, 1]}>
+        <spriteMaterial map={glowTex} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </sprite>
+      <sprite ref={shock} position={[toX(520), 0, 0.1]} scale={[0.4, 0.4, 1]}>
+        <spriteMaterial map={ringTex} transparent opacity={0} depthWrite={false} blending={THREE.AdditiveBlending} />
+      </sprite>
+
+      <points frustumCulled={false} geometry={geo} material={mat} />
+
+      <group position={[toX(520), 0, 0.05]}>
+        <primitive object={sparks.points} />
+        <group ref={ringsRef}>
+          {rings.map((rg, i) => (
+            <primitive key={i} object={rg.g} />
+          ))}
+        </group>
+      </group>
+
+      <primitive object={pulses.left.points} />
+      <primitive object={pulses.right.points} />
+    </group>
+  );
+}
+
+function clamp01(x: number) {
+  return Math.min(1, Math.max(0, x));
+}

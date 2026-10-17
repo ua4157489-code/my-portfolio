@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Handshake from "@/components/Handshake";
 import NetworkWeb from "@/components/NetworkWeb";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
@@ -156,26 +157,10 @@ function Knot() {
 function Portal() {
   const rings = useRef<THREE.Group>(null!);
   const core = useRef<THREE.Mesh>(null!);
-  useFrame((state, dt) => {
-    rings.current.children.forEach((c, k) => {
-      c.rotation.z += dt * (0.3 + k * 0.15) * (k % 2 ? -1 : 1);
-    });
-    core.current.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 2) * 0.12);
-  });
+  
   return (
     <group>
-      <group ref={rings}>
-        {[0.8, 1.3, 1.8, 2.3].map((r, k) => (
-          <mesh key={r} rotation={[0, 0, k]}>
-            <torusGeometry args={[r, 0.02, 8, 96, Math.PI * 1.5]} />
-            <meshBasicMaterial color={k % 2 ? "#a78bfa" : "#22d3ee"} />
-          </mesh>
-        ))}
-      </group>
-      <mesh ref={core}>
-        <sphereGeometry args={[0.35, 24, 24]} />
-        <meshBasicMaterial color="#22d3ee" transparent opacity={0.85} />
-      </mesh>
+      <group position={[0, 1.1, 0]}><Handshake size={0.85} /></group>
     </group>
   );
 }

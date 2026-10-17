@@ -10,9 +10,10 @@ import {
   FocusGrid,
   ProfileCard,
   StoryTabs,
-  ToolsExplorer,
 } from "@/components/AboutParts";
 import { ABOUT, CORE_AREAS, NAME } from "@/data/content";
+import { Journey, Method, Labs, FocusShowcase } from "@/components/AboutExtras";
+import ToolboxPro from "@/components/ToolboxPro";
 
 const KEYWORDS = ["Offensive Security", "Red Teaming", "Vulnerability Assessment"];
 const LABELS = ["Experience", "Currently", "Interests", "Goals"];
@@ -105,8 +106,8 @@ export default function About() {
         </Block>
 
         {/* 5. focus areas */}
-        <Block no="03" title="What I focus on" hint="Hover a card: it follows your cursor and tilts.">
-          <FocusGrid areas={CORE_AREAS} />
+        <Block no="03" title="What I focus on" hint="Pick a card to see what it covers, the tools and where I practise it.">
+          <FocusShowcase areas={CORE_AREAS} />
         </Block>
 
         {/* 6. charts built from the real skills data */}
@@ -116,10 +117,25 @@ export default function About() {
 
         {/* 7. tools explorer */}
         <Block no="05" title="Toolbox" hint="Filter by category or search by name.">
-          <ToolsExplorer tools={TOOLS} />
+          <ToolboxPro />
         </Block>
 
-        {/* 8. call to action */}
+        {/* 8. journey */}
+        <Block no="06" title="My journey" hint="Education, practice and where I work now.">
+          <Journey />
+        </Block>
+
+        {/* 9. method */}
+        <Block no="07" title="How I test" hint="The five stages I follow on every target.">
+          <Method />
+        </Block>
+
+        {/* 10. labs */}
+        <Block no="08" title="Labs I run" hint="Hands-on work I document as I go.">
+          <Labs />
+        </Block>
+
+        {/* call to action */}
         <Reveal>
           <div className="ab-card ab-cta">
             <div className="relative">
