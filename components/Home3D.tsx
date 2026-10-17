@@ -7,6 +7,8 @@ import { useEffect, useMemo, useRef } from "react";
 import type { MutableRefObject, ReactNode } from "react";
 import * as THREE from "three";
 import HackerDesk from "./HackerDesk";
+import SiemServer from "./SiemServer";
+import SiemNetwork from "./SiemNetwork";
 import LabRange from "./LabRange";
 import Typewriter from "./Typewriter";
 import ScrambleText from "./ScrambleText";
@@ -19,7 +21,7 @@ import LabsStation from "./LabsStation";
 type Shared = MutableRefObject<{ p: number; mx: number; my: number }>;
 
 const GAP = 14; // distance between stations
-const LAST = 4; // index of the last station
+const LAST = 5; // index of the last station
 const CAM_D = 9; // camera distance in front of a station
 const rnd = Math.random;
 const sstep = THREE.MathUtils.smoothstep;
@@ -191,7 +193,7 @@ function Gates({ sh }: { sh: Shared }) {
   });
   return (
     <group ref={grp}>
-      {Array.from({ length: 20 }, (_, k) => (
+      {Array.from({ length: 25 }, (_, k) => (
         <mesh key={k} position={[0, 0, 8 - k * 3.8]} rotation={[0, 0, k]}>
           <torusGeometry args={[5.4 + (k % 3) * 0.4, 0.015, 6, 96, Math.PI * 1.5]} />
           <meshBasicMaterial color={k % 2 ? "#a78bfa" : "#22d3ee"} transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
@@ -211,7 +213,7 @@ function Field({ sh }: { sh: Shared }) {
     for (let i = 0; i < 1800; i++) {
       a[i * 3] = (rnd() - 0.5) * 30;
       a[i * 3 + 1] = (rnd() - 0.5) * 16;
-      a[i * 3 + 2] = 8 - rnd() * 78;
+      a[i * 3 + 2] = 8 - rnd() * 92;
     }
     return a;
   }, []);
@@ -315,7 +317,7 @@ export default function Home3D() {
       cls: "justify-center md:justify-end",
       node: (
         <div className={card}>
-          <p className="text-xs tracking-widest text-cyan-400/80">01 / 04</p>
+          <p className="text-xs tracking-widest text-cyan-400/80">01 / 05</p>
           <h3 className="mt-2 text-2xl font-bold text-white">Web application security</h3>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">Testing web apps the way an attacker would, then validating and documenting what I find.</p>
           <Link href="/about" className={`${btn} mt-5 inline-block`}>./about</Link>
@@ -326,9 +328,9 @@ export default function Home3D() {
       cls: "justify-center md:justify-start",
       node: (
         <div className={card}>
-          <p className="text-xs tracking-widest text-cyan-400/80">02 / 04</p>
-          <h3 className="mt-2 text-2xl font-bold text-white">Skills and tooling</h3>
-          <p className="mt-3 text-sm leading-relaxed text-slate-300">Recon, enumeration and scripting, with Linux, Python and the standard offensive security toolset.</p>
+          <p className="text-xs tracking-widest text-cyan-400/80">02 / 05</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">SIEM with Wazuh</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">Open-source SIEM and XDR platform. Agents on every endpoint stream logs to the Wazuh manager, which matches them against rules to flag intrusions, file changes and vulnerabilities, then raises alerts.</p>
           <Link href="/skills" className={`${btn} mt-5 inline-block`}>./skills</Link>
         </div>
       ),
@@ -337,7 +339,18 @@ export default function Home3D() {
       cls: "justify-center md:justify-end",
       node: (
         <div className={card}>
-          <p className="text-xs tracking-widest text-cyan-400/80">03 / 04</p>
+          <p className="text-xs tracking-widest text-cyan-400/80">03 / 05</p>
+          <h3 className="mt-2 text-2xl font-bold text-white">Skills and tooling</h3>
+          <p className="mt-3 text-sm leading-relaxed text-slate-300">Recon, enumeration and scripting, with Linux, Python and the standard offensive security toolset.</p>
+          <Link href="/skills" className={`${btn} mt-5 inline-block`}>./skills</Link>
+        </div>
+      ),
+    },
+    {
+      cls: "justify-center md:justify-start",
+      node: (
+        <div className={card}>
+          <p className="text-xs tracking-widest text-cyan-400/80">04 / 05</p>
           <h3 className="mt-2 text-2xl font-bold text-white">Hands-on labs</h3>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">DVWA, OWASP Top 10 and MITRE ATT&amp;CK write-ups, plus Linux, Docker and Kubernetes labs.</p>
           <Link href="/projects" className={`${btn} mt-5 inline-block`}>./projects</Link>
@@ -348,7 +361,7 @@ export default function Home3D() {
       cls: "justify-center text-center",
       node: (
         <div className={`${card} text-center`}>
-          <p className="text-xs tracking-widest text-cyan-400/80">04 / 04</p>
+          <p className="text-xs tracking-widest text-cyan-400/80">05 / 05</p>
           <h3 className="mt-2 text-2xl font-bold text-white">Let&apos;s work together</h3>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">Open to security internships, collaboration and conversations about breaking things responsibly.</p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
@@ -361,7 +374,7 @@ export default function Home3D() {
   ];
 
   return (
-    <section id="top" ref={sec} className="relative z-10 h-[450vh]">
+    <section id="top" ref={sec} className="relative z-10 h-[562vh]">
       <div ref={layer} className="fixed inset-0 z-[5] overflow-hidden bg-[#03050a]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_55%,rgba(14,116,144,0.22),transparent_60%),radial-gradient(ellipse_at_10%_90%,rgba(124,58,237,0.14),transparent_50%)]" />
         <div className="pointer-events-none absolute inset-0">
@@ -373,9 +386,10 @@ export default function Home3D() {
             <Gates sh={sh} />
             <Station i={0} dir={1} bob={false}><Hero sh={sh} /></Station>
             <Station i={1} dir={-1}><BrowserStation sh={sh} /></Station>
-            <Station i={2} dir={1}><SkillsStation sh={sh} /></Station>
-            <Station i={3} dir={-1}><LabRange /></Station>
-            <Station i={4} dir={0} lift={0.9}><Portal /></Station>
+            <Station i={2} dir={1}><SiemNetwork /></Station>
+            <Station i={3} dir={-1}><SkillsStation sh={sh} /></Station>
+            <Station i={4} dir={1}><LabRange /></Station>
+            <Station i={5} dir={0} lift={0.9}><Portal /></Station>
           </Canvas>
         </div>
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.55))]" />

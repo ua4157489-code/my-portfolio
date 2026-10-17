@@ -114,7 +114,7 @@ export default function NavbarPro() {
 
             {/* right side */}
             <div className="flex items-center gap-2">
-              <span className="hidden items-center gap-2 whitespace-nowrap pr-2 text-xs text-emerald-300/90 2xl:flex">
+              <span className="hidden items-center gap-2 whitespace-nowrap pr-2 text-xs text-emerald-300/90 min-[2200px]:flex">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
